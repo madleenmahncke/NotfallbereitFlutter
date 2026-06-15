@@ -12,7 +12,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -20,21 +19,15 @@ class _LoginPageState extends State<LoginPage> {
   String? _message;
 
   Future<void> login() async {
-
     setState(() {
       _loading = true;
       _message = null;
     });
 
     try {
-
       final response = await http.post(
-        Uri.parse(
-          'http://localhost:3000/api/auth/login',
-        ),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        Uri.parse('http://localhost:3000/api/auth/login'),
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': _emailController.text,
           'password': _passwordController.text,
@@ -48,36 +41,33 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       if (response.statusCode == 200) {
-
         final userId = data['id'];
 
-        debugPrint(
-          'Login erfolgreich. UserId: $userId',
-        );
+        debugPrint('Login erfolgreich. UserId: $userId');
 
         // TODO:
         // JWT speichern
         // Zur HomePage navigieren
-
       }
-
     } catch (e) {
-
       setState(() {
         _message = e.toString();
       });
-
     } finally {
-
       setState(() {
         _loading = false;
       });
-
     }
+  }
+
+  void _openEmergencyProfile(BuildContext context) {
+    // TODO!!!
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: const Color(0xFFA8C3A0),
 
@@ -91,44 +81,58 @@ class _LoginPageState extends State<LoginPage> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Color(0xFF20124D),
-          ),
-          label: const Text(
-            'Zurück',
-            style: TextStyle(
-              color: Color(0xFF20124D),
-            ),
-          ),
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF20124D)),
+          label: const Text('Zurück', style: AppStyles.label),
         ),
       ),
 
       body: Center(
-        child: SizedBox(
-          child: Column(
-            children: [
-              // Title
-              Text('ANMELDUNG', style: AppStyles.title),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 100),
 
-              // Label E-Mail
-              Text(
-                'E-Mail',
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Color(0xFF20124D),
-                  ),
-              ),
+          child: SizedBox(
+            child: Column(
+              children: [
+                SizedBox(height: screenHeight * 0.1),
 
-              // TextField E-Mail
-              TextField(
+                // Title
+                Text('ANMELDUNG', style: AppStyles.title),
 
-              ),
-              TextField(),
-              //ElevatedButton()
-            ],
-          )
-        ), 
+                SizedBox(height: screenHeight * 0.1),
+
+                // Label E-Mail
+                Text('E-Mail:', style: AppStyles.label),
+
+                SizedBox(height: screenHeight * 0.02),
+
+                // TextField E-Mail
+                TextField(
+                  style: AppStyles.inputStyle,
+                  decoration: AppStyles.textField('E-Mail'),
+                ),
+
+                SizedBox(height: screenHeight * 0.07),
+
+                Text('Passwort:', style: AppStyles.label),
+
+                SizedBox(height: screenHeight * 0.02),
+
+                TextField(
+                  style: AppStyles.inputStyle,
+                  decoration: AppStyles.textField('E-Mail'),
+                ),
+
+                SizedBox(height: screenHeight * 0.08),
+
+                ElevatedButton(
+                  onPressed: () => _openEmergencyProfile,
+                  style: AppStyles.button,
+                  child: Text('Anmelden', style: AppStyles.buttonText),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
