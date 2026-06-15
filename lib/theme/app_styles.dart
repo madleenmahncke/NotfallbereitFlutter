@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class AppStyles {
   static const TextStyle label = TextStyle(
     fontSize: 24,
     color: Color(0xFF20124D),
+    fontWeight: FontWeight.bold
+  );
+
+  static const TextStyle labelUnderline = TextStyle(
+    fontSize: 24,
+    color: Color.fromARGB(255, 79, 28, 247),
+    decoration: TextDecoration.underline,
   );
 
   static const TextStyle title = TextStyle(
@@ -15,12 +23,12 @@ class AppStyles {
   static final ButtonStyle button = ElevatedButton.styleFrom(
     backgroundColor: const Color(0xFF274E13),
     foregroundColor: Colors.white,
+    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
   );
 
   static const TextStyle buttonText = TextStyle(
-    fontSize: 36,
+    fontSize: 30,
     color: Colors.white,
-    fontWeight: FontWeight.bold,
   );
 
   static const TextStyle inputStyle = TextStyle(
@@ -34,9 +42,7 @@ class AppStyles {
       filled: true,
       fillColor: Colors.white,
       contentPadding: const EdgeInsets.all(16),
-      border: const OutlineInputBorder(
-        borderRadius: BorderRadius.zero,
-      ),
+      border: const OutlineInputBorder(borderRadius: BorderRadius.zero),
     );
   }
 }

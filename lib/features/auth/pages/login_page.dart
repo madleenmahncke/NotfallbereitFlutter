@@ -77,14 +77,19 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: const Color(0xFFA8C3A0),
         elevation: 0,
 
-        leadingWidth: 120,
+        leadingWidth: screenWidth * 0.4,
 
         leading: TextButton.icon(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back, color: Color(0xFF20124D)),
-          label: const Text('Zurück', style: AppStyles.label),
+          label: const AutoSizeText(
+            'Zurück',
+            style: AppStyles.label,
+            maxLines: 1,
+            minFontSize: 24,
+          ),
         ),
       ),
 
@@ -99,18 +104,23 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   SizedBox(height: screenHeight * 0.1),
 
-                  // Title
+                  // Title Login
                   AutoSizeText(
                     'ANMELDUNG',
                     style: AppStyles.title,
                     maxLines: 1,
-                    minFontSize: 26,
+                    minFontSize: 34,
                   ),
 
                   SizedBox(height: screenHeight * 0.1),
 
                   // Label E-Mail
-                  Text('E-Mail:', style: AppStyles.label),
+                  AutoSizeText(
+                    'E-Mail:',
+                    style: AppStyles.label,
+                    maxLines: 1,
+                    minFontSize: 24,
+                  ),
 
                   SizedBox(height: screenHeight * 0.02),
 
@@ -122,10 +132,17 @@ class _LoginPageState extends State<LoginPage> {
 
                   SizedBox(height: screenHeight * 0.07),
 
-                  Text('Passwort:', style: AppStyles.label),
+                  // Label Password
+                  AutoSizeText(
+                    'Passwort:',
+                    style: AppStyles.label,
+                    maxLines: 1,
+                    minFontSize: 24,
+                  ),
 
                   SizedBox(height: screenHeight * 0.02),
 
+                  // TextField Password
                   TextField(
                     style: AppStyles.inputStyle,
                     decoration: AppStyles.textField(
@@ -140,6 +157,8 @@ class _LoginPageState extends State<LoginPage> {
                     style: AppStyles.button,
                     child: Text('Anmelden', style: AppStyles.buttonText),
                   ),
+
+                  SizedBox(height: screenHeight * 0.05),
                 ],
               ),
             ),

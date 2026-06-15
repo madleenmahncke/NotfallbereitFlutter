@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:notfallbereit/theme/app_styles.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -11,7 +13,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -19,21 +20,15 @@ class _RegisterPageState extends State<RegisterPage> {
   String? _message;
 
   Future<void> register() async {
-
     setState(() {
       _loading = true;
       _message = null;
     });
 
     try {
-
       final response = await http.post(
-        Uri.parse(
-          'http://localhost:3000/api/auth/register',
-        ),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        Uri.parse('http://10.0.2.2:3000/api/auth/register'),
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': _emailController.text,
           'password': _passwordController.text,
@@ -43,81 +38,150 @@ class _RegisterPageState extends State<RegisterPage> {
       final data = jsonDecode(response.body);
 
       setState(() {
-
         _message = data['message'];
-
       });
 
       if (response.statusCode == 200) {
-
         final userId = data['id'];
 
-        debugPrint(
-          'Registrierung erfolgreich. UserId: $userId',
-        );
+        debugPrint('Registrierung erfolgreich. UserId: $userId');
 
         // TODO:
         // JWT speichern
         // Zur HomePage navigieren
-
       }
-
     } catch (e) {
-
       setState(() {
         _message = e.toString();
       });
-
     } finally {
-
       setState(() {
         _loading = false;
       });
-
     }
+  }
+
+  void _openCreateEmergencyProfile(BuildContext context) {
+    // TODO!!!
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: const Color(0xFFA8C3A0),
+
       appBar: AppBar(
-        title: const Text('Registrieren'),
+        backgroundColor: const Color(0xFFA8C3A0),
+        elevation: 0,
+
+        leadingWidth: screenWidth * 0.4,
+
+        leading: TextButton.icon(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF20124D)),
+          label: const AutoSizeText(
+            'Zurück',
+            style: AppStyles.label,
+            maxLines: 1,
+            minFontSize: 24,
+          ),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
 
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'E-Mail',
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
+
+            child: SizedBox(
+              width: screenWidth * 0.8,
+              child: Column(
+                children: [
+                  SizedBox(height: screenHeight * 0.1),
+
+                  // Title Login
+                  AutoSizeText(
+                    'REGISTRIERUNG',
+                    style: AppStyles.title,
+                    maxLines: 1,
+                    minFontSize: 34,
+                  ),
+
+                  SizedBox(height: screenHeight * 0.1),
+
+                  // Label E-Mail
+                  AutoSizeText(
+                    'E-Mail:',
+                    style: AppStyles.label,
+                    maxLines: 1,
+                    minFontSize: 24,
+                  ),
+
+                  SizedBox(height: screenHeight * 0.02),
+
+                  // TextField E-Mail
+                  TextField(
+                    controller: _emailController,
+                    style: AppStyles.inputStyle,
+                    decoration: AppStyles.textField('Hier E-Mail eingeben...'),
+                  ),
+
+                  SizedBox(height: screenHeight * 0.07),
+
+                  // Label Password
+                  AutoSizeText(
+                    'Passwort:',
+                    style: AppStyles.label,
+                    maxLines: 1,
+                    minFontSize: 24,
+                  ),
+
+                  SizedBox(height: screenHeight * 0.02),
+
+                  // TextField Password
+                  TextField(
+                    controller: _passwordController,
+                    style: AppStyles.inputStyle,
+                    decoration: AppStyles.textField('Hier Passwort eingeben...'),
+                  ),
+
+                  SizedBox(height: screenHeight * 0.07),
+
+                  // Label Password wiederholen
+                  AutoSizeText(
+                    'Passwort wiederholen:',
+                    style: AppStyles.label,
+                    maxLines: 1,
+                    minFontSize: 24,
+                  ),
+
+                  SizedBox(height: screenHeight * 0.02),
+
+                  // TextField Password
+                  TextField(
+                    controller: _passwordController,
+                    style: AppStyles.inputStyle,
+                    decoration: AppStyles.textField('Hier Passwort wiederholen...'),
+                  ),
+
+                  SizedBox(height: screenHeight * 0.08),
+
+                  ElevatedButton(
+                    onPressed: register,
+                    style: AppStyles.button,
+                    child: Text('Registrieren', style: AppStyles.buttonText),
+                  ),
+
+                  SizedBox(height: screenHeight * 0.05),
+                ],
               ),
             ),
-
-            const SizedBox(height: 16),
-
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Passwort',
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            ElevatedButton(
-              onPressed: _loading ? null : register,
-              child: const Text('Registrieren'),
-            ),
-
-            const SizedBox(height: 24),
-
-            if (_message != null)
-              Text(_message!),
-          ],
+          ),
         ),
       ),
     );
