@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:notfallbereit/theme/app_styles.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -67,6 +68,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: const Color(0xFFA8C3A0),
@@ -86,50 +88,60 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
 
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 100),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
 
-          child: SizedBox(
-            child: Column(
-              children: [
-                SizedBox(height: screenHeight * 0.1),
+            child: SizedBox(
+              width: screenWidth * 0.8,
+              child: Column(
+                children: [
+                  SizedBox(height: screenHeight * 0.1),
 
-                // Title
-                Text('ANMELDUNG', style: AppStyles.title),
+                  // Title
+                  AutoSizeText(
+                    'ANMELDUNG',
+                    style: AppStyles.title,
+                    maxLines: 1,
+                    minFontSize: 26,
+                  ),
 
-                SizedBox(height: screenHeight * 0.1),
+                  SizedBox(height: screenHeight * 0.1),
 
-                // Label E-Mail
-                Text('E-Mail:', style: AppStyles.label),
+                  // Label E-Mail
+                  Text('E-Mail:', style: AppStyles.label),
 
-                SizedBox(height: screenHeight * 0.02),
+                  SizedBox(height: screenHeight * 0.02),
 
-                // TextField E-Mail
-                TextField(
-                  style: AppStyles.inputStyle,
-                  decoration: AppStyles.textField('E-Mail'),
-                ),
+                  // TextField E-Mail
+                  TextField(
+                    style: AppStyles.inputStyle,
+                    decoration: AppStyles.textField('Hier E-Mail eingeben...'),
+                  ),
 
-                SizedBox(height: screenHeight * 0.07),
+                  SizedBox(height: screenHeight * 0.07),
 
-                Text('Passwort:', style: AppStyles.label),
+                  Text('Passwort:', style: AppStyles.label),
 
-                SizedBox(height: screenHeight * 0.02),
+                  SizedBox(height: screenHeight * 0.02),
 
-                TextField(
-                  style: AppStyles.inputStyle,
-                  decoration: AppStyles.textField('E-Mail'),
-                ),
+                  TextField(
+                    style: AppStyles.inputStyle,
+                    decoration: AppStyles.textField(
+                      'Hier Passwort eingeben...',
+                    ),
+                  ),
 
-                SizedBox(height: screenHeight * 0.08),
+                  SizedBox(height: screenHeight * 0.08),
 
-                ElevatedButton(
-                  onPressed: () => _openEmergencyProfile,
-                  style: AppStyles.button,
-                  child: Text('Anmelden', style: AppStyles.buttonText),
-                ),
-              ],
+                  ElevatedButton(
+                    onPressed: () => _openEmergencyProfile,
+                    style: AppStyles.button,
+                    child: Text('Anmelden', style: AppStyles.buttonText),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
