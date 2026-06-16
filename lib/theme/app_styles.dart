@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 
 class AppStyles {
   static const TextStyle label = TextStyle(
@@ -12,6 +11,18 @@ class AppStyles {
     fontSize: 24,
     color: Color.fromARGB(255, 79, 28, 247),
     decoration: TextDecoration.underline,
+  );
+
+  static const TextStyle text = TextStyle(
+    fontSize: 24,
+    color: Color(0xFF20124D),
+  );
+
+  static const TextStyle tableTitleUnderlined = TextStyle(
+    fontSize: 30,
+    color: Color(0xFF20124D),
+    decoration: TextDecoration.underline,
+    fontWeight: FontWeight.bold
   );
 
   static const TextStyle title = TextStyle(

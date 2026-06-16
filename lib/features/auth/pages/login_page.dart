@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:notfallbereit/features/emergency_profile/pages/emergency_profile.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
@@ -62,7 +63,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _openEmergencyProfile(BuildContext context) {
-    // TODO!!!
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const EmergencyProfilePage()),
+    );
   }
 
   @override

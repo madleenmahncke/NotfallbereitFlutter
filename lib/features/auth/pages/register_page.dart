@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:notfallbereit/features/emergency_profile/pages/create_emergency_profile.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
@@ -62,7 +63,10 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _openCreateEmergencyProfile(BuildContext context) {
-    // TODO!!!
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const CreateEmergencyProfilePage()),
+    );
   }
 
   @override
@@ -172,7 +176,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   SizedBox(height: screenHeight * 0.08),
 
                   ElevatedButton(
-                    onPressed: register,
+                    // TODO change to register
+                    onPressed: () =>_openCreateEmergencyProfile(context),
                     style: AppStyles.button,
                     child: Text('Registrieren', style: AppStyles.buttonText),
                   ),
