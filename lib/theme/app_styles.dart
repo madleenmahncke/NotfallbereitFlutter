@@ -37,8 +37,19 @@ class AppStyles {
     padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
   );
 
+  static final ButtonStyle removeButton = ElevatedButton.styleFrom(
+    backgroundColor: const Color.fromARGB(255, 204, 0, 0),
+    foregroundColor: Colors.white,
+    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+  );
+
   static const TextStyle buttonText = TextStyle(
     fontSize: 30,
+    color: Colors.white,
+  );
+
+  static const TextStyle appBarText = TextStyle(
+    fontSize: 24,
     color: Colors.white,
   );
 

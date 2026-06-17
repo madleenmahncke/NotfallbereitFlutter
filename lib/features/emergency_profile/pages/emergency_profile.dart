@@ -36,19 +36,22 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFA8C3A0),
         elevation: 0,
+        leadingWidth: 180,
 
-        leadingWidth: screenWidth * 0.4,
-
-        leading: TextButton.icon(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF20124D)),
-          label: const AutoSizeText(
-            'Zurück',
-            style: AppStyles.label,
-            maxLines: 1,
-            minFontSize: 24,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12, top: 12),
+          child: TextButton.icon(
+            style: TextButton.styleFrom(
+              backgroundColor: const Color(0xFF666666),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            label: const Text('Zurück', style: AppStyles.appBarText),
           ),
         ),
       ),
@@ -83,6 +86,8 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                       return _buildMobileLayout(context);
                     },
                   ),
+
+                  _buildButtons(context),
                 ],
               ),
             ),
@@ -145,7 +150,12 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
     return Container(
       height: 250,
 
-      decoration: BoxDecoration(border: Border.all(color: const Color.fromARGB(255, 15, 7, 42), width: 3)),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: const Color.fromARGB(255, 15, 7, 42),
+          width: 3,
+        ),
+      ),
 
       child: Column(
         children: [
@@ -154,7 +164,12 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
             padding: const EdgeInsets.all(12),
 
             decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Color.fromARGB(208, 15, 7, 42), width: 1.5)),
+              border: Border(
+                bottom: BorderSide(
+                  color: Color.fromARGB(208, 15, 7, 42),
+                  width: 1.5,
+                ),
+              ),
             ),
 
             child: Text(
@@ -169,12 +184,87 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
               padding: EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text('› Entlassungspapiere_Krankenhausaufenthalt_2025.pdf', style: AppStyles.text)],
+                children: [
+                  Text(
+                    '› Entlassungspapiere_Krankenhausaufenthalt_2025.pdf',
+                    style: AppStyles.text,
+                  ),
+                ],
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildButtons(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    if (screenWidth > 900) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(height: screenHeight * 0.05),
+
+          ElevatedButton(
+            onPressed: () {},
+            style: AppStyles.removeButton,
+            child: const Text(
+              'Information ENTFERNEN',
+              style: AppStyles.buttonText,
+            ),
+          ),
+
+          ElevatedButton(
+            onPressed: () {},
+            style: AppStyles.button,
+            child: const Text(
+              'Information HINZUFÜGEN',
+              style: AppStyles.buttonText,
+            ),
+          ),
+          
+          SizedBox(height: screenHeight * 0.05),
+        ],
+      );
+    } else {
+      return Column(
+        children: [
+          SizedBox(height: screenHeight * 0.1),
+
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: AppStyles.button,
+              child: const Text(
+                'Information HINZUFÜGEN',
+                style: AppStyles.buttonText,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+
+          SizedBox(height: screenHeight * 0.05),
+
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: AppStyles.removeButton,
+              child: const Text(
+                'Information ENTFERNEN',
+                style: AppStyles.buttonText,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+
+          SizedBox(height: screenHeight * 0.05),
+        ],
+      );
+    }
   }
 }

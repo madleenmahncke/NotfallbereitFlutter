@@ -80,19 +80,22 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFA8C3A0),
         elevation: 0,
+        leadingWidth: 180,
 
-        leadingWidth: screenWidth * 0.4,
-
-        leading: TextButton.icon(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF20124D)),
-          label: const AutoSizeText(
-            'Zurück',
-            style: AppStyles.label,
-            maxLines: 1,
-            minFontSize: 24,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12, top: 12),
+          child: TextButton.icon(
+            style: TextButton.styleFrom(
+              backgroundColor: const Color(0xFF666666),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            label: const Text('Zurück', style: AppStyles.appBarText),
           ),
         ),
       ),
