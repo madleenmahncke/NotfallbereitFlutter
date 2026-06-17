@@ -16,6 +16,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _repeatedPasswordController = TextEditingController();
 
   bool _loading = false;
   String? _message;
@@ -28,11 +29,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/auth/register'),
+        Uri.parse('http://localhost:3000/api/auth/register'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': _emailController.text,
           'password': _passwordController.text,
+          'repeatedPassword': _repeatedPasswordController.text
         }),
       );
 
@@ -44,6 +46,15 @@ class _RegisterPageState extends State<RegisterPage> {
 
       if (response.statusCode == 200) {
         final userId = data['id'];
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CreateEmergencyProfilePage(
+              userId: userId,
+            ),
+          ),
+        );
 
         debugPrint('Registrierung erfolgreich. UserId: $userId');
 
@@ -63,10 +74,10 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _openCreateEmergencyProfile(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const CreateEmergencyProfilePage()),
-    );
+    //Navigator.push(
+      //context,
+      //MaterialPageRoute(builder: (_) => const CreateEmergencyProfilePage()),
+    //);
   }
 
   @override
@@ -171,7 +182,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   // TextField Password
                   TextField(
-                    controller: _passwordController,
+                    controller: _repeatedPasswordController,
                     style: AppStyles.inputStyle,
                     decoration: AppStyles.textField('Hier Passwort wiederholen...'),
                   ),
@@ -180,7 +191,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   ElevatedButton(
                     // TODO change to register
-                    onPressed: () =>_openCreateEmergencyProfile(context),
+                    onPressed: () => register(),
                     style: AppStyles.button,
                     child: Text('Registrieren', style: AppStyles.buttonText),
                   ),

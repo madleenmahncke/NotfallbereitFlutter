@@ -6,7 +6,14 @@ import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 class EmergencyProfilePage extends StatefulWidget {
-  const EmergencyProfilePage({super.key});
+  final int userId;
+  final int emergencyProfileId;
+
+  const EmergencyProfilePage({
+    super.key,
+    required this.userId,
+    required this.emergencyProfileId,
+  });
 
   @override
   State<EmergencyProfilePage> createState() => _EmergencyProfilePageState();
@@ -225,7 +232,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
               style: AppStyles.buttonText,
             ),
           ),
-          
+
           SizedBox(height: screenHeight * 0.05),
         ],
       );

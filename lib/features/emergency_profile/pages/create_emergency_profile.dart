@@ -7,13 +7,17 @@ import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 class CreateEmergencyProfilePage extends StatefulWidget {
-  const CreateEmergencyProfilePage({super.key});
+  final int userId;
+
+  const CreateEmergencyProfilePage({super.key, required this.userId});
 
   @override
-  State<CreateEmergencyProfilePage> createState() => _CreateEmergencyProfilePageState();
+  State<CreateEmergencyProfilePage> createState() =>
+      _CreateEmergencyProfilePageState();
 }
 
-class _CreateEmergencyProfilePageState extends State<CreateEmergencyProfilePage> {
+class _CreateEmergencyProfilePageState
+    extends State<CreateEmergencyProfilePage> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _adressController = TextEditingController();
@@ -30,13 +34,15 @@ class _CreateEmergencyProfilePageState extends State<CreateEmergencyProfilePage>
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/auth/register'),
+        Uri.parse(
+          'http://localhost:3000/api/emergencyProfile/${widget.userId}',
+        ),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'firstName': _firstNameController.text,
           'lastName': _lastNameController.text,
-          'adress': _adressController,
-          'zipCode': _zipCodeController
+          'street': _adressController.text,
+          'zipCode': _zipCodeController.text,
         }),
       );
 
@@ -46,8 +52,22 @@ class _CreateEmergencyProfilePageState extends State<CreateEmergencyProfilePage>
         _message = data['message'];
       });
 
-      if (response.statusCode == 200) {
-        final userId = data['id'];
+      debugPrint('Status: ${response.statusCode}');
+      debugPrint(response.body);
+
+      if (response.statusCode == 201) {
+        final userId = data['userId'];
+        final int? emergencyProfileId = data['emergencyProfileId'];
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => EmergencyProfilePage(
+              userId: userId,
+              emergencyProfileId: emergencyProfileId!,
+            ),
+          ),
+        );
 
         debugPrint('Erstellen des Notfallprofils erfolgreich. UserId: $userId');
 
@@ -67,10 +87,10 @@ class _CreateEmergencyProfilePageState extends State<CreateEmergencyProfilePage>
   }
 
   void _openEmergencyProfile(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const EmergencyProfilePage()),
-    );
+    //Navigator.push(
+    //context,
+    //MaterialPageRoute(builder: (_) => const EmergencyProfilePage()),
+    //);
   }
 
   @override
@@ -139,7 +159,9 @@ class _CreateEmergencyProfilePageState extends State<CreateEmergencyProfilePage>
                   TextField(
                     controller: _firstNameController,
                     style: AppStyles.inputStyle,
-                    decoration: AppStyles.textField('Hier Vornamen eingeben...'),
+                    decoration: AppStyles.textField(
+                      'Hier Vornamen eingeben...',
+                    ),
                   ),
 
                   SizedBox(height: screenHeight * 0.07),
@@ -158,12 +180,14 @@ class _CreateEmergencyProfilePageState extends State<CreateEmergencyProfilePage>
                   TextField(
                     controller: _lastNameController,
                     style: AppStyles.inputStyle,
-                    decoration: AppStyles.textField('Hier Nachnamen eingeben...'),
+                    decoration: AppStyles.textField(
+                      'Hier Nachnamen eingeben...',
+                    ),
                   ),
 
                   SizedBox(height: screenHeight * 0.07),
 
-                  // Label adress 
+                  // Label adress
                   AutoSizeText(
                     'Adresse:',
                     style: AppStyles.label,
@@ -194,18 +218,23 @@ class _CreateEmergencyProfilePageState extends State<CreateEmergencyProfilePage>
 
                   // TextField zip code and city
                   TextField(
-                    controller: _adressController,
+                    controller: _zipCodeController,
                     style: AppStyles.inputStyle,
-                    decoration: AppStyles.textField('Hier Postleitzahl und Ort eingeben eingeben...'),
+                    decoration: AppStyles.textField(
+                      'Hier Postleitzahl und Ort eingeben eingeben...',
+                    ),
                   ),
 
                   SizedBox(height: screenHeight * 0.08),
 
                   ElevatedButton(
-                    // TODO CHANGE createEmergencyProfile
-                    onPressed: () => _openEmergencyProfile(context),
+                    onPressed: () => createEmergencyProfile(),
                     style: AppStyles.button,
-                    child: Text('Notfallmappe anlegen', style: AppStyles.buttonText, textAlign: TextAlign.center),
+                    child: Text(
+                      'Notfallmappe anlegen',
+                      style: AppStyles.buttonText,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
 
                   SizedBox(height: screenHeight * 0.05),

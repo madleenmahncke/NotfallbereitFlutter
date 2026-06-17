@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:notfallbereit/features/emergency_profile/pages/create_emergency_profile.dart';
 import 'package:notfallbereit/features/emergency_profile/pages/emergency_profile.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -43,8 +44,28 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       if (response.statusCode == 200) {
-        final userId = data['id'];
+        final bool hasEmergencyProfile = data['hasEmergencyProfile'];
+        final int userId = data['userId'];
+        final int? emergencyProfileId = data['emergencyProfileId'];
 
+        if (hasEmergencyProfile) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => EmergencyProfilePage(
+                userId: userId,
+                emergencyProfileId: emergencyProfileId!,
+              ),
+            ),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => CreateEmergencyProfilePage(userId: userId),
+            ),
+          );
+        }
         debugPrint('Login erfolgreich. UserId: $userId');
 
         // TODO:
@@ -60,13 +81,6 @@ class _LoginPageState extends State<LoginPage> {
         _loading = false;
       });
     }
-  }
-
-  void _openEmergencyProfile(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const EmergencyProfilePage()),
-    );
   }
 
   @override
@@ -133,6 +147,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   // TextField E-Mail
                   TextField(
+                    controller: _emailController,
                     style: AppStyles.inputStyle,
                     decoration: AppStyles.textField('Hier E-Mail eingeben...'),
                   ),
@@ -151,6 +166,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   // TextField Password
                   TextField(
+                    controller: _passwordController,
                     style: AppStyles.inputStyle,
                     decoration: AppStyles.textField(
                       'Hier Passwort eingeben...',
@@ -160,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: screenHeight * 0.08),
 
                   ElevatedButton(
-                    onPressed: () => _openEmergencyProfile,
+                    onPressed: () => login(),
                     style: AppStyles.button,
                     child: Text('Anmelden', style: AppStyles.buttonText),
                   ),
