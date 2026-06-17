@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../features/auth/pages/start_page.dart';
+import 'features/auth/pages/index.dart';
 
 void main() {
   runApp(
@@ -20,7 +20,7 @@ class NotfallbereitApp extends StatelessWidget {
         fontFamily: 'Agenor',
       ),
 
-      home: const StartPage(),
+      home: const Index(),
     );
   }
 }

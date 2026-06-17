@@ -4,8 +4,8 @@ import 'package:notfallbereit/features/auth/pages/register_page.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-class StartPage extends StatelessWidget {
-  const StartPage({super.key});
+class Index extends StatelessWidget {
+  const Index({super.key});
 
   void _openLogin(BuildContext context) {
     Navigator.push(
