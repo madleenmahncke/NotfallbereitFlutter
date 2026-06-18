@@ -6,6 +6,7 @@ import 'package:notfallbereit/features/emergency_profile/pages/create_emergency_
 import 'package:notfallbereit/features/emergency_profile/pages/emergency_profile.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import '../../../core/api/api_config.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -29,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3000/api/auth/login'),
+        Uri.parse('$ApiConfig.baseUrlContent-Type/api/auth/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': _emailController.text,

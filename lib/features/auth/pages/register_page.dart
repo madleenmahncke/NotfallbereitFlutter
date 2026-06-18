@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/emergency_profile/pages/create_emergency_profile.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import '../../../core/api/api_config.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -29,7 +30,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3000/api/auth/register'),
+        Uri.parse('$ApiConfig.baseUrlContent-Type/api/auth/register'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': _emailController.text,
