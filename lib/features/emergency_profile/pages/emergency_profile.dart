@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import '../../../core/api/api_config.dart';
 
 class EmergencyProfilePage extends StatefulWidget {
   final int userId;
@@ -20,16 +21,47 @@ class EmergencyProfilePage extends StatefulWidget {
 }
 
 class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _adressController = TextEditingController();
-  final _zipCodeController = TextEditingController();
+  List<dynamic> allergies = [];
+  List<dynamic> medications = [];
+  List<dynamic> emergencyContacts = [];
 
-  bool _loading = false;
-  String? _message;
+  Map<String, dynamic>? emergencyProfile;
 
-  void _openEmergencyProfile(BuildContext context) {
-    // TODO!!!
+  //bool _loading = false;
+  //String? _message;
+
+  @override
+  void initState() {
+    super.initState();
+
+    loadEmergencyProfile();
+  }
+
+  Future<void> loadEmergencyProfile() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          '${ApiConfig.baseUrl}/api/emergencyProfile/${widget.userId}/${widget.emergencyProfileId}',
+        ),
+      );  
+      
+      print(response.statusCode);
+      print(response.body);
+
+      final data = jsonDecode(response.body);
+
+      print('BODY: ${response.body}');
+      print('ALLERGIES: ${data['allergies']}');
+
+      setState(() {
+        emergencyProfile = data['emergencyProfile'];
+        allergies = data['allergies'] ?? [];
+        medications = data['medications'] ?? [];
+        emergencyContacts = data['emergencyContacts'] ?? [];
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override
@@ -112,19 +144,21 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
       height: 500,
       child: Row(
         children: [
-          Expanded(child: _section('Allergien:', context)),
+          Expanded(child: _section('Allergien:', allergies, context)),
 
           SizedBox(width: screenWidth * 0.005),
 
-          Expanded(child: _section('Medikamente:', context)),
+          Expanded(child: _section('Medikamente:', medications, context)),
 
           SizedBox(width: screenWidth * 0.005),
 
-          Expanded(child: _section('Notfallkontakte:', context)),
+          Expanded(
+            child: _section('Notfallkontakte:', emergencyContacts, context),
+          ),
 
           SizedBox(width: screenWidth * 0.005),
 
-          Expanded(child: _section('Dokumente:', context)),
+          Expanded(child: _section('Dokumente:', allergies, context)),
         ],
       ),
     );
@@ -136,21 +170,22 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
 
     return Column(
       children: [
-        _section('Allergien:', context),
+        _section('Allergien:', allergies, context),
+
         const SizedBox(height: 20),
 
-        _section('Medikamente:', context),
+        _section('Medikamente:', medications, context),
         const SizedBox(height: 20),
 
-        _section('Notfallkontakte:', context),
+        _section('Notfallkontakte:', emergencyContacts, context),
         const SizedBox(height: 20),
 
-        _section('Dokumente:', context),
+        _section('Dokumente:', allergies, context),
       ],
     );
   }
 
-  Widget _section(String title, BuildContext context) {
+  Widget _section(String title, List<dynamic> entries, BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -186,17 +221,40 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
             ),
           ),
 
-          const Expanded(
+          Expanded(
             child: Padding(
-              padding: EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '› Entlassungspapiere_Krankenhausaufenthalt_2025.pdf',
-                    style: AppStyles.text,
-                  ),
-                ],
+              padding: const EdgeInsets.all(12),
+              child: ListView.builder(
+                itemCount: entries.length,
+                itemBuilder: (context, index) {
+                  final item = entries[index];
+
+                  if (title == 'Allergien:') {
+                    return Text('› ${item['allergen']}', style: AppStyles.text);
+                  }
+
+                  if (title == 'Medikamente:') {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('${item['name']}, ', style: AppStyles.text),
+                          Text('${item['dosage']}', style: AppStyles.text),
+                        ],
+                      ),
+                    );
+                  }
+
+                  if (title == 'Notfallkontakte:') {
+                    return Text(
+                      '› ${item['first_name']} ${item['last_name']}',
+                      style: AppStyles.text,
+                    );
+                  }
+
+                  return const SizedBox();
+                },
               ),
             ),
           ),

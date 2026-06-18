@@ -17,8 +17,7 @@ class CreateEmergencyProfilePage extends StatefulWidget {
       _CreateEmergencyProfilePageState();
 }
 
-class _CreateEmergencyProfilePageState
-    extends State<CreateEmergencyProfilePage> {
+class _CreateEmergencyProfilePageState extends State<CreateEmergencyProfilePage> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _adressController = TextEditingController();
