@@ -35,9 +35,7 @@ class _CreateEmergencyProfilePageState
 
     try {
       final response = await http.post(
-        Uri.parse(
-          '$ApiConfig.baseUrlContent-Type/api/emergencyProfile/${widget.userId}',
-        ),
+        Uri.parse('${ApiConfig.baseUrl}/api/emergencyProfile/${widget.userId}'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'firstName': _firstNameController.text,
