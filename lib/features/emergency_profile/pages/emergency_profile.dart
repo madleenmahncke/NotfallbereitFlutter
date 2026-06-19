@@ -43,15 +43,9 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
         Uri.parse(
           '${ApiConfig.baseUrl}/api/emergencyProfile/${widget.userId}/${widget.emergencyProfileId}',
         ),
-      );  
-      
-      print(response.statusCode);
-      print(response.body);
+      );
 
       final data = jsonDecode(response.body);
-
-      print('BODY: ${response.body}');
-      print('ALLERGIES: ${data['allergies']}');
 
       setState(() {
         emergencyProfile = data['emergencyProfile'];
@@ -101,10 +95,10 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
             padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
 
             child: SizedBox(
-              width: screenWidth * 0.8,
+              width: screenWidth * 0.9,
               child: Column(
                 children: [
-                  SizedBox(height: screenHeight * 0.1),
+                  SizedBox(height: screenHeight * 0.06),
 
                   // Title Create Emergency Profile
                   AutoSizeText(
@@ -114,11 +108,11 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                     minFontSize: 34,
                   ),
 
-                  SizedBox(height: screenHeight * 0.1),
+                  SizedBox(height: screenHeight * 0.05),
 
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      if (constraints.maxWidth > 900) {
+                      if (screenWidth > 1300) {
                         return _buildDesktopLayout(context);
                       }
 
@@ -141,7 +135,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return SizedBox(
-      height: 500,
+      height: screenHeight * 0.6,
       child: Row(
         children: [
           Expanded(child: _section('Allergien:', allergies, context)),
@@ -239,8 +233,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('${item['name']}, ', style: AppStyles.text),
-                          Text('${item['dosage']}', style: AppStyles.text),
+                          Text('› ${item['name']}', style: AppStyles.text),
                         ],
                       ),
                     );
@@ -267,27 +260,37 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    if (screenWidth > 900) {
+    if (screenWidth > 1300) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(height: screenHeight * 0.05),
-
           ElevatedButton(
             onPressed: () {},
             style: AppStyles.removeButton,
-            child: const Text(
+            child: AutoSizeText(
               'Information ENTFERNEN',
-              style: AppStyles.buttonText,
+              style: AppStyles.emergencyProfileInformationButtonText,
+              minFontSize: 24,
+            ),
+          ),
+
+          ElevatedButton(
+            onPressed: () {},
+            style: AppStyles.qrCodeButton,
+            child: AutoSizeText(
+              'QR-Code abrufen',
+              style: AppStyles.emergencyProfileInformationButtonText,
+              minFontSize: 24,
             ),
           ),
 
           ElevatedButton(
             onPressed: () {},
             style: AppStyles.button,
-            child: const Text(
+            child: AutoSizeText(
               'Information HINZUFÜGEN',
-              style: AppStyles.buttonText,
+              style: AppStyles.emergencyProfileInformationButtonText,
+              minFontSize: 24,
             ),
           ),
 
@@ -300,13 +303,13 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
           SizedBox(height: screenHeight * 0.1),
 
           SizedBox(
-            width: double.infinity,
+            width: 600,
             child: ElevatedButton(
               onPressed: () {},
               style: AppStyles.button,
               child: const Text(
                 'Information HINZUFÜGEN',
-                style: AppStyles.buttonText,
+                style: AppStyles.emergencyProfileInformationButtonText,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -315,13 +318,28 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
           SizedBox(height: screenHeight * 0.05),
 
           SizedBox(
-            width: double.infinity,
+            width: 600,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: AppStyles.qrCodeButton,
+              child: AutoSizeText(
+                'QR-Code abrufen',
+                style: AppStyles.emergencyProfileInformationButtonText,
+                minFontSize: 24,
+              ),
+            ),
+          ),
+
+          SizedBox(height: screenHeight * 0.05),
+
+          SizedBox(
+            width: 600,
             child: ElevatedButton(
               onPressed: () {},
               style: AppStyles.removeButton,
               child: const Text(
                 'Information ENTFERNEN',
-                style: AppStyles.buttonText,
+                style: AppStyles.emergencyProfileInformationButtonText,
                 textAlign: TextAlign.center,
               ),
             ),
