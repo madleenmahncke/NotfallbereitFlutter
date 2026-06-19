@@ -37,6 +37,12 @@ class AppStyles {
     padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
   );
 
+  static final ButtonStyle qrCodeButton = ElevatedButton.styleFrom(
+    backgroundColor: const Color(0xFF70A7DD),
+    foregroundColor: Colors.white,
+    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+  );
+
   static final ButtonStyle removeButton = ElevatedButton.styleFrom(
     backgroundColor: const Color.fromARGB(255, 204, 0, 0),
     foregroundColor: Colors.white,
@@ -45,6 +51,11 @@ class AppStyles {
 
   static const TextStyle buttonText = TextStyle(
     fontSize: 30,
+    color: Colors.white,
+  );
+
+  static const TextStyle emergencyProfileInformationButtonText = TextStyle(
+    fontSize: 26,
     color: Colors.white,
   );
 

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/emergency_profile/pages/create_emergency_profile.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import '../../../core/api/api_config.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -16,6 +17,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _repeatedPasswordController = TextEditingController();
 
   bool _loading = false;
   String? _message;
@@ -26,15 +28,24 @@ class _RegisterPageState extends State<RegisterPage> {
       _message = null;
     });
 
+    print('1 REGISTER START');
+
     try {
+      print('2 VOR REQUEST');
+
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/auth/register'),
+        Uri.parse('${ApiConfig.baseUrl}/api/auth/register'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': _emailController.text,
           'password': _passwordController.text,
+          'repeatedPassword': _repeatedPasswordController.text,
         }),
       );
+
+      print('3 RESPONSE DA');
+      print('STATUS: ${response.statusCode}');
+      print('BODY: ${response.body}');
 
       final data = jsonDecode(response.body);
 
@@ -45,13 +56,23 @@ class _RegisterPageState extends State<RegisterPage> {
       if (response.statusCode == 200) {
         final userId = data['id'];
 
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CreateEmergencyProfilePage(userId: userId),
+          ),
+        );
+
         debugPrint('Registrierung erfolgreich. UserId: $userId');
 
         // TODO:
         // JWT speichern
         // Zur HomePage navigieren
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('FEHLER: $e');
+      print(stackTrace);
+
       setState(() {
         _message = e.toString();
       });
@@ -63,10 +84,10 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _openCreateEmergencyProfile(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const CreateEmergencyProfilePage()),
-    );
+    //Navigator.push(
+    //context,
+    //MaterialPageRoute(builder: (_) => const CreateEmergencyProfilePage()),
+    //);
   }
 
   @override
@@ -154,7 +175,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   TextField(
                     controller: _passwordController,
                     style: AppStyles.inputStyle,
-                    decoration: AppStyles.textField('Hier Passwort eingeben...'),
+                    decoration: AppStyles.textField(
+                      'Hier Passwort eingeben...',
+                    ),
                   ),
 
                   SizedBox(height: screenHeight * 0.07),
@@ -171,16 +194,18 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   // TextField Password
                   TextField(
-                    controller: _passwordController,
+                    controller: _repeatedPasswordController,
                     style: AppStyles.inputStyle,
-                    decoration: AppStyles.textField('Hier Passwort wiederholen...'),
+                    decoration: AppStyles.textField(
+                      'Hier Passwort wiederholen...',
+                    ),
                   ),
 
                   SizedBox(height: screenHeight * 0.08),
 
                   ElevatedButton(
                     // TODO change to register
-                    onPressed: () =>_openCreateEmergencyProfile(context),
+                    onPressed: () => register(),
                     style: AppStyles.button,
                     child: Text('Registrieren', style: AppStyles.buttonText),
                   ),

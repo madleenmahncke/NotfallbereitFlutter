@@ -4,25 +4,58 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import '../../../core/api/api_config.dart';
 
 class EmergencyProfilePage extends StatefulWidget {
-  const EmergencyProfilePage({super.key});
+  final int userId;
+  final int emergencyProfileId;
+
+  const EmergencyProfilePage({
+    super.key,
+    required this.userId,
+    required this.emergencyProfileId,
+  });
 
   @override
   State<EmergencyProfilePage> createState() => _EmergencyProfilePageState();
 }
 
 class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _adressController = TextEditingController();
-  final _zipCodeController = TextEditingController();
+  List<dynamic> allergies = [];
+  List<dynamic> medications = [];
+  List<dynamic> emergencyContacts = [];
 
-  bool _loading = false;
-  String? _message;
+  Map<String, dynamic>? emergencyProfile;
 
-  void _openEmergencyProfile(BuildContext context) {
-    // TODO!!!
+  //bool _loading = false;
+  //String? _message;
+
+  @override
+  void initState() {
+    super.initState();
+
+    loadEmergencyProfile();
+  }
+
+  Future<void> loadEmergencyProfile() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          '${ApiConfig.baseUrl}/api/emergencyProfile/${widget.userId}/${widget.emergencyProfileId}',
+        ),
+      );
+
+      final data = jsonDecode(response.body);
+
+      setState(() {
+        emergencyProfile = data['emergencyProfile'];
+        allergies = data['allergies'] ?? [];
+        medications = data['medications'] ?? [];
+        emergencyContacts = data['emergencyContacts'] ?? [];
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override
@@ -62,10 +95,10 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
             padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
 
             child: SizedBox(
-              width: screenWidth * 0.8,
+              width: screenWidth * 0.9,
               child: Column(
                 children: [
-                  SizedBox(height: screenHeight * 0.1),
+                  SizedBox(height: screenHeight * 0.06),
 
                   // Title Create Emergency Profile
                   AutoSizeText(
@@ -75,11 +108,11 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                     minFontSize: 34,
                   ),
 
-                  SizedBox(height: screenHeight * 0.1),
+                  SizedBox(height: screenHeight * 0.05),
 
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      if (constraints.maxWidth > 900) {
+                      if (screenWidth > 1300) {
                         return _buildDesktopLayout(context);
                       }
 
@@ -102,22 +135,24 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return SizedBox(
-      height: 500,
+      height: screenHeight * 0.6,
       child: Row(
         children: [
-          Expanded(child: _section('Allergien:', context)),
+          Expanded(child: _section('Allergien:', allergies, context)),
 
           SizedBox(width: screenWidth * 0.005),
 
-          Expanded(child: _section('Medikamente:', context)),
+          Expanded(child: _section('Medikamente:', medications, context)),
 
           SizedBox(width: screenWidth * 0.005),
 
-          Expanded(child: _section('Notfallkontakte:', context)),
+          Expanded(
+            child: _section('Notfallkontakte:', emergencyContacts, context),
+          ),
 
           SizedBox(width: screenWidth * 0.005),
 
-          Expanded(child: _section('Dokumente:', context)),
+          Expanded(child: _section('Dokumente:', allergies, context)),
         ],
       ),
     );
@@ -129,21 +164,22 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
 
     return Column(
       children: [
-        _section('Allergien:', context),
+        _section('Allergien:', allergies, context),
+
         const SizedBox(height: 20),
 
-        _section('Medikamente:', context),
+        _section('Medikamente:', medications, context),
         const SizedBox(height: 20),
 
-        _section('Notfallkontakte:', context),
+        _section('Notfallkontakte:', emergencyContacts, context),
         const SizedBox(height: 20),
 
-        _section('Dokumente:', context),
+        _section('Dokumente:', allergies, context),
       ],
     );
   }
 
-  Widget _section(String title, BuildContext context) {
+  Widget _section(String title, List<dynamic> entries, BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -179,17 +215,39 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
             ),
           ),
 
-          const Expanded(
+          Expanded(
             child: Padding(
-              padding: EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '› Entlassungspapiere_Krankenhausaufenthalt_2025.pdf',
-                    style: AppStyles.text,
-                  ),
-                ],
+              padding: const EdgeInsets.all(12),
+              child: ListView.builder(
+                itemCount: entries.length,
+                itemBuilder: (context, index) {
+                  final item = entries[index];
+
+                  if (title == 'Allergien:') {
+                    return Text('› ${item['allergen']}', style: AppStyles.text);
+                  }
+
+                  if (title == 'Medikamente:') {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('› ${item['name']}', style: AppStyles.text),
+                        ],
+                      ),
+                    );
+                  }
+
+                  if (title == 'Notfallkontakte:') {
+                    return Text(
+                      '› ${item['first_name']} ${item['last_name']}',
+                      style: AppStyles.text,
+                    );
+                  }
+
+                  return const SizedBox();
+                },
               ),
             ),
           ),
@@ -202,30 +260,40 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    if (screenWidth > 900) {
+    if (screenWidth > 1300) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(height: screenHeight * 0.05),
-
           ElevatedButton(
             onPressed: () {},
             style: AppStyles.removeButton,
-            child: const Text(
+            child: AutoSizeText(
               'Information ENTFERNEN',
-              style: AppStyles.buttonText,
+              style: AppStyles.emergencyProfileInformationButtonText,
+              minFontSize: 24,
+            ),
+          ),
+
+          ElevatedButton(
+            onPressed: () {},
+            style: AppStyles.qrCodeButton,
+            child: AutoSizeText(
+              'QR-Code abrufen',
+              style: AppStyles.emergencyProfileInformationButtonText,
+              minFontSize: 24,
             ),
           ),
 
           ElevatedButton(
             onPressed: () {},
             style: AppStyles.button,
-            child: const Text(
+            child: AutoSizeText(
               'Information HINZUFÜGEN',
-              style: AppStyles.buttonText,
+              style: AppStyles.emergencyProfileInformationButtonText,
+              minFontSize: 24,
             ),
           ),
-          
+
           SizedBox(height: screenHeight * 0.05),
         ],
       );
@@ -235,13 +303,13 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
           SizedBox(height: screenHeight * 0.1),
 
           SizedBox(
-            width: double.infinity,
+            width: 600,
             child: ElevatedButton(
               onPressed: () {},
               style: AppStyles.button,
               child: const Text(
                 'Information HINZUFÜGEN',
-                style: AppStyles.buttonText,
+                style: AppStyles.emergencyProfileInformationButtonText,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -250,13 +318,28 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
           SizedBox(height: screenHeight * 0.05),
 
           SizedBox(
-            width: double.infinity,
+            width: 600,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: AppStyles.qrCodeButton,
+              child: AutoSizeText(
+                'QR-Code abrufen',
+                style: AppStyles.emergencyProfileInformationButtonText,
+                minFontSize: 24,
+              ),
+            ),
+          ),
+
+          SizedBox(height: screenHeight * 0.05),
+
+          SizedBox(
+            width: 600,
             child: ElevatedButton(
               onPressed: () {},
               style: AppStyles.removeButton,
               child: const Text(
                 'Information ENTFERNEN',
-                style: AppStyles.buttonText,
+                style: AppStyles.emergencyProfileInformationButtonText,
                 textAlign: TextAlign.center,
               ),
             ),
