@@ -4,7 +4,7 @@ class AppStyles {
   static const TextStyle label = TextStyle(
     fontSize: 24,
     color: Color(0xFF20124D),
-    fontWeight: FontWeight.bold
+    fontWeight: FontWeight.bold,
   );
 
   static const TextStyle labelUnderline = TextStyle(
@@ -22,7 +22,7 @@ class AppStyles {
     fontSize: 30,
     color: Color(0xFF20124D),
     decoration: TextDecoration.underline,
-    fontWeight: FontWeight.bold
+    fontWeight: FontWeight.bold,
   );
 
   static const TextStyle title = TextStyle(
@@ -34,6 +34,12 @@ class AppStyles {
   static final ButtonStyle button = ElevatedButton.styleFrom(
     backgroundColor: const Color(0xFF274E13),
     foregroundColor: Colors.white,
+    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+  );
+
+  static final ButtonStyle whiteButton = ElevatedButton.styleFrom(
+    backgroundColor: Colors.white,
+    foregroundColor: Colors.black,
     padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
   );
 
@@ -49,9 +55,21 @@ class AppStyles {
     padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
   );
 
+  static final ButtonStyle fakeAppBar = ElevatedButton.styleFrom(
+    backgroundColor: const Color(0xFF666666),
+    foregroundColor: Colors.white,
+    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+  );
+
   static const TextStyle buttonText = TextStyle(
     fontSize: 30,
     color: Colors.white,
+  );
+
+  static const TextStyle buttonTextBlack = TextStyle(
+    fontSize: 30,
+    color: Colors.black,
   );
 
   static const TextStyle emergencyProfileInformationButtonText = TextStyle(
@@ -78,4 +96,12 @@ class AppStyles {
       border: const OutlineInputBorder(borderRadius: BorderRadius.zero),
     );
   }
+
+  static final alertShape = RoundedRectangleBorder(
+  borderRadius: BorderRadius.circular(28),
+  side: const BorderSide(
+    color: Color(0xFFFF9900),
+    width: 2,
+  ),
+);
 }

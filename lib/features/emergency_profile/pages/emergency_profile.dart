@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
+import '../../allergy/pages/allergy_dialog.dart';
 
 class EmergencyProfilePage extends StatefulWidget {
   final int userId;
@@ -224,7 +225,23 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                   final item = entries[index];
 
                   if (title == 'Allergien:') {
-                    return Text('› ${item['allergen']}', style: AppStyles.text);
+                    return TextButton(
+                      onPressed: () async {
+                        final result = await showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) => AllergyDialog(allergy: item),
+                        );
+
+                        if (result == true) {
+                          await loadEmergencyProfile();
+                        }
+                      },
+                      child: Text(
+                        '› ${item['allergen']}',
+                        style: AppStyles.text,
+                      ),
+                    );
                   }
 
                   if (title == 'Medikamente:') {
