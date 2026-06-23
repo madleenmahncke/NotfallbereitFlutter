@@ -168,6 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                   // TextField Password
                   TextField(
                     controller: _passwordController,
+                    obscureText: true,
                     style: AppStyles.inputStyle,
                     decoration: AppStyles.textField(
                       'Hier Passwort eingeben...',

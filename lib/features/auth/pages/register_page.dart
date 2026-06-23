@@ -19,6 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _repeatedPasswordController = TextEditingController();
 
+bool _consentGiven = false;
   bool _loading = false;
   String? _message;
 
@@ -28,10 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
       _message = null;
     });
 
-    print('1 REGISTER START');
-
     try {
-      print('2 VOR REQUEST');
 
       final response = await http.post(
         Uri.parse('${ApiConfig.baseUrl}/api/auth/register'),
@@ -42,10 +40,6 @@ class _RegisterPageState extends State<RegisterPage> {
           'repeatedPassword': _repeatedPasswordController.text,
         }),
       );
-
-      print('3 RESPONSE DA');
-      print('STATUS: ${response.statusCode}');
-      print('BODY: ${response.body}');
 
       final data = jsonDecode(response.body);
 
@@ -81,13 +75,6 @@ class _RegisterPageState extends State<RegisterPage> {
         _loading = false;
       });
     }
-  }
-
-  void _openCreateEmergencyProfile(BuildContext context) {
-    //Navigator.push(
-    //context,
-    //MaterialPageRoute(builder: (_) => const CreateEmergencyProfilePage()),
-    //);
   }
 
   @override
@@ -174,6 +161,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   // TextField Password
                   TextField(
                     controller: _passwordController,
+                    obscureText: true,
                     style: AppStyles.inputStyle,
                     decoration: AppStyles.textField(
                       'Hier Passwort eingeben...',
@@ -195,6 +183,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   // TextField Password
                   TextField(
                     controller: _repeatedPasswordController,
+                    obscureText: true,
                     style: AppStyles.inputStyle,
                     decoration: AppStyles.textField(
                       'Hier Passwort wiederholen...',
@@ -203,9 +192,37 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   SizedBox(height: screenHeight * 0.08),
 
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: screenWidth * 0.8),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Checkbox(
+                            value: _consentGiven,
+                            onChanged: (value) {
+                              setState(() {
+                                _consentGiven = value ?? false;
+                              });
+                            },
+                          ),
+                          Flexible(
+                            child: Text(
+                              "Ich habe die Datenschutzerklärung gelesen und stimme der Verarbeitung meiner personenbezogenen sowie gesundheitsbezogenen Daten zum Zweck der Nutzung der Notfallmappe zu.",
+                              textAlign: TextAlign.center,
+                              style: AppStyles.label,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: screenHeight * 0.02),
+
                   ElevatedButton(
-                    // TODO change to register
-                    onPressed: () => register(),
+                    onPressed: _consentGiven ? register : null,
                     style: AppStyles.button,
                     child: Text('Registrieren', style: AppStyles.buttonText),
                   ),
