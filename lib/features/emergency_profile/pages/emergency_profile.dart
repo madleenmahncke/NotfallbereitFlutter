@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:notfallbereit/features/unbenannt/pages/auswahl_informationen.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
@@ -282,7 +283,17 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              final result = await showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => SelectInformationWindow(title: 'ENTFERNEN'),
+              );
+
+              if (result == true) {
+                await loadEmergencyProfile();
+              }
+            },
             style: AppStyles.removeButton,
             child: AutoSizeText(
               'Information ENTFERNEN',
@@ -302,7 +313,17 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
           ),
 
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              final result = await showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => SelectInformationWindow(title: 'HINZUFÜGEN'),
+              );
+
+              if (result == true) {
+                await loadEmergencyProfile();
+              }
+            },
             style: AppStyles.button,
             child: AutoSizeText(
               'Information HINZUFÜGEN',
@@ -322,7 +343,17 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
           SizedBox(
             width: 600,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                final result = await showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => SelectInformationWindow(title: 'HINZUFÜGEN'),
+                );
+
+                if (result == true) {
+                  await loadEmergencyProfile();
+                }
+              },
               style: AppStyles.button,
               child: const Text(
                 'Information HINZUFÜGEN',
@@ -352,7 +383,17 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
           SizedBox(
             width: 600,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                final result = await showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => SelectInformationWindow(title: 'ENTFERNEN'),
+                );
+
+                if (result == true) {
+                  await loadEmergencyProfile();
+                }
+              },
               style: AppStyles.removeButton,
               child: const Text(
                 'Information ENTFERNEN',

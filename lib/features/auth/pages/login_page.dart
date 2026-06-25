@@ -38,6 +38,10 @@ class _LoginPageState extends State<LoginPage> {
         }),
       );
 
+      // TODO: richtige Fehlermeldung einbauen mit Alerts
+      debugPrint('Status: ${response.statusCode}');
+      debugPrint(response.body);
+
       final data = jsonDecode(response.body);
 
       setState(() {

@@ -42,6 +42,7 @@ class AllergyDialog extends StatelessWidget {
     }
   }
 
+  // TODO
   Future<void> changeAllergyInformation() async {}
 
   Widget build(BuildContext context) {
