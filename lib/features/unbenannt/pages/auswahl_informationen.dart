@@ -15,6 +15,8 @@ class SelectInformationWindow extends StatelessWidget {
     const double buttonWidth = 320;
     const double buttonHeight = 60;
 
+    // TODO: if Abfrage im Button, ob es hinzufügen oder entfernen ist. Danach dann jeweils das passende weitere Fenster aufrufen
+
     return Dialog(
       backgroundColor: const Color(0xFFA8C3A0),
       child: SingleChildScrollView(
