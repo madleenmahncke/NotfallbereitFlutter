@@ -287,7 +287,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
               final result = await showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (_) => SelectInformationWindow(title: 'ENTFERNEN'),
+                builder: (_) => SelectInformationWindow(title: 'ENTFERNEN', emergencyProfileId: widget.emergencyProfileId),
               );
 
               if (result == true) {
@@ -317,7 +317,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
               final result = await showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (_) => SelectInformationWindow(title: 'HINZUFÜGEN'),
+                builder: (_) => SelectInformationWindow(title: 'HINZUFÜGEN', emergencyProfileId: widget.emergencyProfileId),
               );
 
               if (result == true) {
@@ -347,7 +347,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                 final result = await showDialog(
                   context: context,
                   barrierDismissible: false,
-                  builder: (_) => SelectInformationWindow(title: 'HINZUFÜGEN'),
+                  builder: (_) => SelectInformationWindow(title: 'HINZUFÜGEN', emergencyProfileId: widget.emergencyProfileId),
                 );
 
                 if (result == true) {
@@ -387,7 +387,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                 final result = await showDialog(
                   context: context,
                   barrierDismissible: false,
-                  builder: (_) => SelectInformationWindow(title: 'ENTFERNEN'),
+                  builder: (_) => SelectInformationWindow(title: 'ENTFERNEN', emergencyProfileId: widget.emergencyProfileId),
                 );
 
                 if (result == true) {

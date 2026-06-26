@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 
-class SelectInformationWindow extends StatelessWidget {
-  final String title;
+class AddAllergyWindow extends StatelessWidget {
   final int emergencyProfileId;
 
-  const SelectInformationWindow({super.key, required this.title, required this.emergencyProfileId});
+  const AddAllergyWindow({super.key, required this.emergencyProfileId});
 
   @override
   Widget build(BuildContext context) {
