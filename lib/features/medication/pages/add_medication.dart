@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import '../../../core/api/api_config.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class AddAllergyWindow extends StatefulWidget {
+class AddMedicationWindow extends StatefulWidget {
   final int emergencyProfileId;
 
-  const AddAllergyWindow({super.key, required this.emergencyProfileId});
+  const AddMedicationWindow({super.key, required this.emergencyProfileId});
 
   @override
-  State<AddAllergyWindow> createState() => _AddAllergyWindowState();
+  State<AddMedicationWindow> createState() => _AddMedicationWindow();
 }
 
-class _AddAllergyWindowState extends State<AddAllergyWindow> {
-  final _allergyNameController = TextEditingController();
-  final _allergyNotesController = TextEditingController();
+class _AddMedicationWindow extends State<AddMedicationWindow> {
+  final _medicationNameController = TextEditingController();
+  final _medicationDosageController = TextEditingController();
+  final _medicationNotesController = TextEditingController();
 
   bool _loading = false;
   String? _message;
 
-  Future<void> createAllergy() async {
+  Future<void> createMedication() async {
     setState(() {
       _loading = true;
       _message = null;
@@ -29,11 +30,14 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
 
     try {
       final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/api/allergy/${widget.emergencyProfileId}'),
+        Uri.parse(
+          '${ApiConfig.baseUrl}/api/medication/${widget.emergencyProfileId}',
+        ),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'name': _allergyNameController.text,
-          'notes': _allergyNotesController.text,
+          'name': _medicationNameController.text,
+          'dosage': _medicationDosageController.text,
+          'notes': _medicationNotesController.text,
         }),
       );
 
@@ -88,7 +92,7 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
               ),
 
               AutoSizeText(
-                'Allergie HINZUFÜGEN',
+                'Medikament HINZUFÜGEN',
                 style: AppStyles.title,
                 minFontSize: 34,
                 textAlign: TextAlign.center,
@@ -106,11 +110,31 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
               SizedBox(height: screenHeight * 0.02),
 
               TextField(
-                controller: _allergyNameController,
+                controller: _medicationNameController,
                 style: AppStyles.inputStyle,
                 maxLength: 100,
                 decoration: AppStyles.textField(
-                  'Hier Namen der Allergie eingeben...',
+                  'Hier Namen des Medikaments eingeben...',
+                ),
+              ),
+
+              SizedBox(height: screenHeight * 0.04),
+
+              AutoSizeText(
+                'Dosierung:',
+                style: AppStyles.label,
+                maxLines: 1,
+                minFontSize: 24,
+              ),
+
+              SizedBox(height: screenHeight * 0.02),
+
+              TextField(
+                controller: _medicationDosageController,
+                style: AppStyles.inputStyle,
+                maxLength: 100,
+                decoration: AppStyles.textField(
+                  'Hier Dosierung des Medikaments eingeben...',
                 ),
               ),
 
@@ -126,13 +150,13 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
               SizedBox(height: screenHeight * 0.02),
 
               TextField(
-                controller: _allergyNotesController,
+                controller: _medicationNotesController,
                 minLines: 5,
                 maxLines: 10,
                 maxLength: 500,
                 style: AppStyles.inputStyle,
                 decoration: AppStyles.textField(
-                  'Hier Notizen zur Allergie eingeben...',
+                  'Hier Notizen zum Medikament eingeben...',
                 ),
               ),
 
@@ -140,7 +164,7 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
 
               ElevatedButton(
                 style: AppStyles.button,
-                onPressed: () => createAllergy(),
+                onPressed: () => createMedication(),
                 child: const Text(
                   'Hinzufügen',
                   style: AppStyles.buttonText,

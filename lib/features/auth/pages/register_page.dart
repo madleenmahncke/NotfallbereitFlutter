@@ -19,7 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _repeatedPasswordController = TextEditingController();
 
-bool _consentGiven = false;
+  bool _consentGiven = false;
   bool _loading = false;
   String? _message;
 
@@ -30,7 +30,6 @@ bool _consentGiven = false;
     });
 
     try {
-
       final response = await http.post(
         Uri.parse('${ApiConfig.baseUrl}/api/auth/register'),
         headers: {'Content-Type': 'application/json'},
@@ -142,6 +141,7 @@ bool _consentGiven = false;
                   // TextField E-Mail
                   TextField(
                     controller: _emailController,
+
                     style: AppStyles.inputStyle,
                     decoration: AppStyles.textField('Hier E-Mail eingeben...'),
                   ),

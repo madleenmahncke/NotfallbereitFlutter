@@ -7,6 +7,13 @@ class AppStyles {
     fontWeight: FontWeight.bold,
   );
 
+  static const TextStyle labelNormalUnderline = TextStyle(
+    fontSize: 24,
+    color: Color(0xFF20124D),
+    fontWeight: FontWeight.bold,
+    decoration: TextDecoration.underline,
+  );
+
   static const TextStyle labelUnderline = TextStyle(
     fontSize: 24,
     color: Color.fromARGB(255, 79, 28, 247),

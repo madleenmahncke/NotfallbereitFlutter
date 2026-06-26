@@ -153,6 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                   // TextField E-Mail
                   TextField(
                     controller: _emailController,
+                    maxLength: 255,
                     style: AppStyles.inputStyle,
                     decoration: AppStyles.textField('Hier E-Mail eingeben...'),
                   ),

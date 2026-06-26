@@ -5,23 +5,23 @@ import 'package:http/http.dart' as http;
 import '../../../core/api/api_config.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 
-class AllergyDialog extends StatelessWidget {
-  final Map<String, dynamic> allergy;
+class EmergencyContactDialog extends StatelessWidget {
+  final Map<String, dynamic> emergencyContact;
 
-  const AllergyDialog({super.key, required this.allergy});
+  const EmergencyContactDialog({super.key, required this.emergencyContact});
 
-  Future<void> deleteAllergy(BuildContext context) async {
-    final allergyId = allergy['id'];
-    final emergencyProfileId = allergy['profile_id'];
+  Future<void> deleteEmergencyContact(BuildContext context) async {
+    final emergencyContactId = emergencyContact['id'];
+    final emergencyProfileId = emergencyContact['profile_id'];
 
     try {
       final response = await http.delete(
         Uri.parse(
-          '${ApiConfig.baseUrl}/api/allergy/$emergencyProfileId/$allergyId',
+          '${ApiConfig.baseUrl}/api/emergencyContact/$emergencyProfileId/$emergencyContactId',
         ),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'id': allergyId,
+          'id': emergencyContactId,
           'emergencyProfileId': emergencyProfileId
         }),
       );
@@ -40,7 +40,7 @@ class AllergyDialog extends StatelessWidget {
   }
 
   // TODO
-  Future<void> changeAllergyInformation() async {}
+  Future<void> changeEmergencyContactInformation() async {}
 
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -71,22 +71,35 @@ class AllergyDialog extends StatelessWidget {
               SizedBox(height: screenHeight * 0.05),
 
               Text(
-                'Allergie: ${allergy['allergen'].toString().toUpperCase()}',
+                'Notfallkontakt: ${emergencyContact['first_name'].toString().toUpperCase()} ${emergencyContact['last_name'].toString().toUpperCase()}',
                 style: AppStyles.title,
-                textAlign: TextAlign.center,
               ),
 
               SizedBox(height: screenHeight * 0.05),
 
               Text(
-                'Notizen:',
+                'Telefonnummer:',
                 style: AppStyles.labelNormalUnderline,
               ),
 
               SizedBox(height: screenHeight * 0.02),
 
               Text(
-                '${allergy['notes'].toString()}',
+                '${emergencyContact['phone'].toString()}',
+                style: AppStyles.label,
+              ),
+
+              SizedBox(height: screenHeight * 0.04),
+
+              Text(
+                'Beziehung:',
+                style: AppStyles.labelNormalUnderline,
+              ),
+
+              SizedBox(height: screenHeight * 0.02),
+
+              Text(
+                '${emergencyContact['relationship'].toString()}',
                 style: AppStyles.label,
               ),
 
@@ -107,8 +120,8 @@ class AllergyDialog extends StatelessWidget {
                             builder: (_) => CustomAlert(
                               title: 'WARNUNG',
                               message:
-                                  'Willst du diese Allergie wirklich löschen?',
-                              onConfirm: () => deleteAllergy(context),
+                                  'Willst du diesen Notfallkontakt wirklich löschen?',
+                              onConfirm: () => deleteEmergencyContact(context),
                             ),
                           );
                         },
@@ -123,7 +136,7 @@ class AllergyDialog extends StatelessWidget {
                       alignment: Alignment.center,
                       child: ElevatedButton(
                         style: AppStyles.whiteButton,
-                        onPressed: () => changeAllergyInformation(),
+                        onPressed: () => changeEmergencyContactInformation(),
                         child: const Text(
                           'Informationen bearbeiten',
                           style: AppStyles.buttonTextBlack,

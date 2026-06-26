@@ -5,23 +5,23 @@ import 'package:http/http.dart' as http;
 import '../../../core/api/api_config.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 
-class AllergyDialog extends StatelessWidget {
-  final Map<String, dynamic> allergy;
+class MedicationDialog extends StatelessWidget {
+  final Map<String, dynamic> medication;
 
-  const AllergyDialog({super.key, required this.allergy});
+  const MedicationDialog({super.key, required this.medication});
 
-  Future<void> deleteAllergy(BuildContext context) async {
-    final allergyId = allergy['id'];
-    final emergencyProfileId = allergy['profile_id'];
+  Future<void> deleteMedication(BuildContext context) async {
+    final medicationId = medication['id'];
+    final emergencyProfileId = medication['profile_id'];
 
     try {
       final response = await http.delete(
         Uri.parse(
-          '${ApiConfig.baseUrl}/api/allergy/$emergencyProfileId/$allergyId',
+          '${ApiConfig.baseUrl}/api/medication/$emergencyProfileId/$medicationId',
         ),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'id': allergyId,
+          'id': medicationId,
           'emergencyProfileId': emergencyProfileId
         }),
       );
@@ -40,7 +40,7 @@ class AllergyDialog extends StatelessWidget {
   }
 
   // TODO
-  Future<void> changeAllergyInformation() async {}
+  Future<void> changeMedicationInformation() async {}
 
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -71,7 +71,7 @@ class AllergyDialog extends StatelessWidget {
               SizedBox(height: screenHeight * 0.05),
 
               Text(
-                'Allergie: ${allergy['allergen'].toString().toUpperCase()}',
+                'Medikament: ${medication['name'].toString().toUpperCase()}',
                 style: AppStyles.title,
                 textAlign: TextAlign.center,
               ),
@@ -83,10 +83,10 @@ class AllergyDialog extends StatelessWidget {
                 style: AppStyles.labelNormalUnderline,
               ),
 
-              SizedBox(height: screenHeight * 0.02),
+                            SizedBox(height: screenHeight * 0.02),
 
               Text(
-                '${allergy['notes'].toString()}',
+                '${medication['notes'].toString()}',
                 style: AppStyles.label,
               ),
 
@@ -107,8 +107,8 @@ class AllergyDialog extends StatelessWidget {
                             builder: (_) => CustomAlert(
                               title: 'WARNUNG',
                               message:
-                                  'Willst du diese Allergie wirklich löschen?',
-                              onConfirm: () => deleteAllergy(context),
+                                  'Willst du dieses Medikament wirklich löschen?',
+                              onConfirm: () => deleteMedication(context),
                             ),
                           );
                         },
@@ -123,7 +123,7 @@ class AllergyDialog extends StatelessWidget {
                       alignment: Alignment.center,
                       child: ElevatedButton(
                         style: AppStyles.whiteButton,
-                        onPressed: () => changeAllergyInformation(),
+                        onPressed: () => changeMedicationInformation(),
                         child: const Text(
                           'Informationen bearbeiten',
                           style: AppStyles.buttonTextBlack,

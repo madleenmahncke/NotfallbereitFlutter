@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:notfallbereit/features/emergency_contact/pages/emergency_contact_dialog.dart';
+import 'package:notfallbereit/features/medication/pages/medication_dialog.dart';
 import 'package:notfallbereit/features/unbenannt/pages/auswahl_informationen.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -49,6 +51,9 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
 
       final data = jsonDecode(response.body);
 
+      debugPrint(data.toString());
+      debugPrint(data['emergencyProfile'].toString());
+
       setState(() {
         emergencyProfile = data['emergencyProfile'];
         allergies = data['allergies'] ?? [];
@@ -64,6 +69,11 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
+    // GPT HELP
+    if (emergencyProfile == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFA8C3A0),
@@ -112,6 +122,15 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
 
                   SizedBox(height: screenHeight * 0.05),
 
+                  AutoSizeText(
+                    '${emergencyProfile!['first_name']} ${emergencyProfile!['last_name']}, ${emergencyProfile!['street']}, ${emergencyProfile!['zip_code']}',
+                    maxLines: 2,
+                    minFontSize: 24,
+                    style: AppStyles.label,
+                  ),
+
+                  SizedBox(height: screenHeight * 0.05),
+
                   LayoutBuilder(
                     builder: (context, constraints) {
                       if (screenWidth > 1300) {
@@ -123,6 +142,8 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                   ),
 
                   _buildButtons(context),
+
+                  SizedBox(height: screenHeight * 0.05),
                 ],
               ),
             ),
@@ -246,21 +267,40 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                   }
 
                   if (title == 'Medikamente:') {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('› ${item['name']}', style: AppStyles.text),
-                        ],
-                      ),
+                    return TextButton(
+                      onPressed: () async {
+                        final result = await showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) => MedicationDialog(medication: item),
+                        );
+
+                        if (result == true) {
+                          await loadEmergencyProfile();
+                        }
+                      },
+                      child: Text('› ${item['name']}', style: AppStyles.text),
                     );
                   }
 
                   if (title == 'Notfallkontakte:') {
-                    return Text(
-                      '› ${item['first_name']} ${item['last_name']}',
-                      style: AppStyles.text,
+                    return TextButton(
+                      onPressed: () async {
+                        final result = await showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) =>
+                              EmergencyContactDialog(emergencyContact: item),
+                        );
+
+                        if (result == true) {
+                          await loadEmergencyProfile();
+                        }
+                      },
+                      child: Text(
+                        '› ${item['first_name']} ${item['last_name']}',
+                        style: AppStyles.text,
+                      ),
                     );
                   }
 
@@ -287,7 +327,10 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
               final result = await showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (_) => SelectInformationWindow(title: 'ENTFERNEN', emergencyProfileId: widget.emergencyProfileId),
+                builder: (_) => SelectInformationWindow(
+                  title: 'ENTFERNEN',
+                  emergencyProfileId: widget.emergencyProfileId,
+                ),
               );
 
               if (result == true) {
@@ -317,7 +360,10 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
               final result = await showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (_) => SelectInformationWindow(title: 'HINZUFÜGEN', emergencyProfileId: widget.emergencyProfileId),
+                builder: (_) => SelectInformationWindow(
+                  title: 'HINZUFÜGEN',
+                  emergencyProfileId: widget.emergencyProfileId,
+                ),
               );
 
               if (result == true) {
@@ -347,7 +393,10 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                 final result = await showDialog(
                   context: context,
                   barrierDismissible: false,
-                  builder: (_) => SelectInformationWindow(title: 'HINZUFÜGEN', emergencyProfileId: widget.emergencyProfileId),
+                  builder: (_) => SelectInformationWindow(
+                    title: 'HINZUFÜGEN',
+                    emergencyProfileId: widget.emergencyProfileId,
+                  ),
                 );
 
                 if (result == true) {
@@ -387,7 +436,10 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                 final result = await showDialog(
                   context: context,
                   barrierDismissible: false,
-                  builder: (_) => SelectInformationWindow(title: 'ENTFERNEN', emergencyProfileId: widget.emergencyProfileId),
+                  builder: (_) => SelectInformationWindow(
+                    title: 'ENTFERNEN',
+                    emergencyProfileId: widget.emergencyProfileId,
+                  ),
                 );
 
                 if (result == true) {

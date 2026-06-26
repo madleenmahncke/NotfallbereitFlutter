@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import '../../../core/api/api_config.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class AddAllergyWindow extends StatefulWidget {
+class AddEmergencyContactWindow extends StatefulWidget {
   final int emergencyProfileId;
 
-  const AddAllergyWindow({super.key, required this.emergencyProfileId});
+  const AddEmergencyContactWindow({
+    super.key,
+    required this.emergencyProfileId,
+  });
 
   @override
-  State<AddAllergyWindow> createState() => _AddAllergyWindowState();
+  State<AddEmergencyContactWindow> createState() => _AddEmergencyContactState();
 }
 
-class _AddAllergyWindowState extends State<AddAllergyWindow> {
-  final _allergyNameController = TextEditingController();
-  final _allergyNotesController = TextEditingController();
+class _AddEmergencyContactState extends State<AddEmergencyContactWindow> {
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
+  final _relationshipController = TextEditingController();
 
   bool _loading = false;
   String? _message;
 
-  Future<void> createAllergy() async {
+  Future<void> createEmergencyContact() async {
     setState(() {
       _loading = true;
       _message = null;
@@ -29,11 +34,15 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
 
     try {
       final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/api/allergy/${widget.emergencyProfileId}'),
+        Uri.parse(
+          '${ApiConfig.baseUrl}/api/emergencyContact/${widget.emergencyProfileId}',
+        ),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'name': _allergyNameController.text,
-          'notes': _allergyNotesController.text,
+          'firstName': _firstNameController.text,
+          'lastName': _lastNameController.text,
+          'phoneNumber': _phoneNumberController.text,
+          'relationship': _relationshipController.text 
         }),
       );
 
@@ -88,7 +97,7 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
               ),
 
               AutoSizeText(
-                'Allergie HINZUFÜGEN',
+                'Notfallkontakt HINZUFÜGEN',
                 style: AppStyles.title,
                 minFontSize: 34,
                 textAlign: TextAlign.center,
@@ -97,7 +106,7 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
               SizedBox(height: screenHeight * 0.05),
 
               AutoSizeText(
-                'Name:',
+                'Vorname:',
                 style: AppStyles.label,
                 maxLines: 1,
                 minFontSize: 24,
@@ -106,18 +115,18 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
               SizedBox(height: screenHeight * 0.02),
 
               TextField(
-                controller: _allergyNameController,
+                controller: _firstNameController,
                 style: AppStyles.inputStyle,
                 maxLength: 100,
                 decoration: AppStyles.textField(
-                  'Hier Namen der Allergie eingeben...',
+                  'Hier den Vornamen des Kontakts eingeben...',
                 ),
               ),
 
               SizedBox(height: screenHeight * 0.04),
 
               AutoSizeText(
-                'Notizen:',
+                'Nachname:',
                 style: AppStyles.label,
                 maxLines: 1,
                 minFontSize: 24,
@@ -126,13 +135,51 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
               SizedBox(height: screenHeight * 0.02),
 
               TextField(
-                controller: _allergyNotesController,
-                minLines: 5,
-                maxLines: 10,
-                maxLength: 500,
+                controller: _lastNameController,
                 style: AppStyles.inputStyle,
+                maxLength: 100,
                 decoration: AppStyles.textField(
-                  'Hier Notizen zur Allergie eingeben...',
+                  'Hier den Nachnamen des Kontakts eingeben...',
+                ),
+              ),
+
+              SizedBox(height: screenHeight * 0.04),
+
+              AutoSizeText(
+                'Telefonnummer:',
+                style: AppStyles.label,
+                maxLines: 1,
+                minFontSize: 24,
+              ),
+
+              SizedBox(height: screenHeight * 0.02),
+
+              TextField(
+                controller: _phoneNumberController,
+                style: AppStyles.inputStyle,
+                maxLength: 30,
+                decoration: AppStyles.textField(
+                  'Hier die Telefonnummer des Kontakts eingeben...',
+                ),
+              ),
+
+              SizedBox(height: screenHeight * 0.04),
+
+              AutoSizeText(
+                'Beziehung:',
+                style: AppStyles.label,
+                maxLines: 1,
+                minFontSize: 24,
+              ),
+
+              SizedBox(height: screenHeight * 0.02),
+
+              TextField(
+                controller: _relationshipController,
+                style: AppStyles.inputStyle,
+                maxLength: 100,
+                decoration: AppStyles.textField(
+                  'Hier die Beziehung zum Kontakt eingeben...',
                 ),
               ),
 
@@ -140,7 +187,7 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
 
               ElevatedButton(
                 style: AppStyles.button,
-                onPressed: () => createAllergy(),
+                onPressed: () => createEmergencyContact(),
                 child: const Text(
                   'Hinzufügen',
                   style: AppStyles.buttonText,

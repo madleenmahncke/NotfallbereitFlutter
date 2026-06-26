@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:notfallbereit/features/allergy/pages/add_allergy.dart';
+import 'package:notfallbereit/features/emergency_contact/pages/add_emergency_contact.dart';
+import 'package:notfallbereit/features/medication/pages/add_medication.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 
 class SelectInformationWindow extends StatelessWidget {
   final String title;
   final int emergencyProfileId;
 
-  const SelectInformationWindow({super.key, required this.title, required this.emergencyProfileId});
+  const SelectInformationWindow({
+    super.key,
+    required this.title,
+    required this.emergencyProfileId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +24,12 @@ class SelectInformationWindow extends StatelessWidget {
     const double buttonHeight = 60;
 
     // TODO: if Abfrage im Button, ob es hinzufügen oder entfernen ist. Danach dann jeweils das passende weitere Fenster aufrufen
+
+    bool addInformation = false;
+
+    if (title == 'HINZUFÜGEN') {
+      addInformation = true;
+    }
 
     return Dialog(
       backgroundColor: const Color(0xFFA8C3A0),
@@ -41,9 +54,10 @@ class SelectInformationWindow extends StatelessWidget {
               ),
 
               AutoSizeText(
-                'INFORMATION $title',
+                'Information $title',
                 style: AppStyles.title,
                 minFontSize: 34,
+                textAlign: TextAlign.center,
               ),
 
               SizedBox(height: screenHeight * 0.05),
@@ -53,7 +67,21 @@ class SelectInformationWindow extends StatelessWidget {
                 height: buttonHeight,
                 child: ElevatedButton(
                   style: AppStyles.whiteButton,
-                  onPressed: () {},
+                  onPressed: addInformation
+                      ? () async {
+                          final result = await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => AddAllergyWindow(
+                              emergencyProfileId: emergencyProfileId,
+                            ),
+                          );
+
+                          if (result == true) {
+                            Navigator.pop(context, true);
+                          }
+                        }
+                      : () {},
                   child: const Text(
                     'Allergie',
                     style: AppStyles.label,
@@ -69,7 +97,21 @@ class SelectInformationWindow extends StatelessWidget {
                 height: buttonHeight,
                 child: ElevatedButton(
                   style: AppStyles.whiteButton,
-                  onPressed: () {},
+                  onPressed: addInformation
+                      ? () async {
+                          final result = await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => AddMedicationWindow(
+                              emergencyProfileId: emergencyProfileId,
+                            ),
+                          );
+
+                          if (result == true) {
+                            Navigator.pop(context, true);
+                          }
+                        }
+                      : () {},
                   child: const Text(
                     'Medikament',
                     style: AppStyles.label,
@@ -85,7 +127,21 @@ class SelectInformationWindow extends StatelessWidget {
                 height: buttonHeight,
                 child: ElevatedButton(
                   style: AppStyles.whiteButton,
-                  onPressed: () {},
+                  onPressed: addInformation
+                      ? () async {
+                          final result = await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => AddEmergencyContactWindow(
+                              emergencyProfileId: emergencyProfileId,
+                            ),
+                          );
+
+                          if (result == true) {
+                            Navigator.pop(context, true);
+                          }
+                        }
+                      : () {},
                   child: const Text(
                     'Notfallkontakt',
                     style: AppStyles.label,
