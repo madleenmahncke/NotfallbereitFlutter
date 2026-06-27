@@ -95,6 +95,7 @@ class _AddMedicationWindow extends State<AddMedicationWindow> {
                 'Medikament HINZUFÜGEN',
                 style: AppStyles.title,
                 minFontSize: 34,
+                maxLines: 2,
                 textAlign: TextAlign.center,
               ),
 

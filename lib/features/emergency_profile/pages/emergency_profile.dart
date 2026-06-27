@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/emergency_contact/pages/emergency_contact_dialog.dart';
 import 'package:notfallbereit/features/medication/pages/medication_dialog.dart';
 import 'package:notfallbereit/features/unbenannt/pages/auswahl_informationen.dart';
+import 'package:notfallbereit/features/unbenannt/pages/qr_code_dialog.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
@@ -124,7 +125,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
 
                   AutoSizeText(
                     '${emergencyProfile!['first_name']} ${emergencyProfile!['last_name']}, ${emergencyProfile!['street']}, ${emergencyProfile!['zip_code']}',
-                    maxLines: 2,
+                    maxLines: 6,
                     minFontSize: 24,
                     style: AppStyles.label,
                   ),
@@ -346,7 +347,18 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
           ),
 
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              final result = await showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) =>
+                    QRCodeDialog(emergencyProfile: emergencyProfile!),
+              );
+
+              if (result == true) {
+                await loadEmergencyProfile();
+              }
+            },
             style: AppStyles.qrCodeButton,
             child: AutoSizeText(
               'QR-Code abrufen',
@@ -417,7 +429,18 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
           SizedBox(
             width: 600,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                final result = await showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) =>
+                      QRCodeDialog(emergencyProfile: emergencyProfile!),
+                );
+
+                if (result == true) {
+                  await loadEmergencyProfile();
+                }
+              },
               style: AppStyles.qrCodeButton,
               child: AutoSizeText(
                 'QR-Code abrufen',

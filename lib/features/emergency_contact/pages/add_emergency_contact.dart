@@ -100,6 +100,7 @@ class _AddEmergencyContactState extends State<AddEmergencyContactWindow> {
                 'Notfallkontakt HINZUFÜGEN',
                 style: AppStyles.title,
                 minFontSize: 34,
+                maxLines: 2,
                 textAlign: TextAlign.center,
               ),
 

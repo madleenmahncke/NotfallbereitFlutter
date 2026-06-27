@@ -91,6 +91,7 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
                 'Allergie HINZUFÜGEN',
                 style: AppStyles.title,
                 minFontSize: 34,
+                maxLines: 2,
                 textAlign: TextAlign.center,
               ),
 

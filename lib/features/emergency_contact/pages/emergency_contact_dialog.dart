@@ -74,6 +74,7 @@ class EmergencyContactDialog extends StatelessWidget {
               Text(
                 'Notfallkontakt: ${emergencyContact['first_name'].toString().toUpperCase()} ${emergencyContact['last_name'].toString().toUpperCase()}',
                 style: AppStyles.title,
+                textAlign: TextAlign.center,
               ),
 
               SizedBox(height: screenHeight * 0.05),

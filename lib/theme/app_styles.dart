@@ -97,6 +97,7 @@ class AppStyles {
   static InputDecoration textField(String hint) {
     return InputDecoration(
       hintText: hint,
+      hintMaxLines: 3,
       filled: true,
       fillColor: Colors.white,
       contentPadding: const EdgeInsets.all(16),

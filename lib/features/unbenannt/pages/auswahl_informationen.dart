@@ -21,7 +21,7 @@ class SelectInformationWindow extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     const double buttonWidth = 320;
-    const double buttonHeight = 60;
+    const double buttonHeight = 80;
 
     // TODO: if Abfrage im Button, ob es hinzufügen oder entfernen ist. Danach dann jeweils das passende weitere Fenster aufrufen
 
@@ -56,6 +56,7 @@ class SelectInformationWindow extends StatelessWidget {
               AutoSizeText(
                 'Information $title',
                 style: AppStyles.title,
+                maxLines: 2,
                 minFontSize: 34,
                 textAlign: TextAlign.center,
               ),
