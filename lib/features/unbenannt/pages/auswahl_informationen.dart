@@ -47,7 +47,7 @@ class SelectInformationWindow extends StatelessWidget {
                   child: TextButton.icon(
                     onPressed: () => Navigator.pop(context),
                     style: AppStyles.fakeAppBar,
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
                     label: const Text('Zurück', style: AppStyles.appBarText),
                   ),
                 ),

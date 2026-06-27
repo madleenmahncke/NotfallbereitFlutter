@@ -101,7 +101,7 @@ class _RegisterPageState extends State<RegisterPage> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
             label: const Text('Zurück', style: AppStyles.appBarText),
           ),
         ),

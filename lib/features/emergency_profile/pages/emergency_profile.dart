@@ -82,23 +82,47 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFA8C3A0),
         elevation: 0,
-        leadingWidth: 180,
+        toolbarHeight: 80,
 
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12, top: 12),
-          child: TextButton.icon(
-            style: TextButton.styleFrom(
-              backgroundColor: const Color(0xFF666666),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+        automaticallyImplyLeading: false,
+
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: 180,
+              height: 56,
+              child: TextButton.icon(
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xFF666666),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                label: const Text('Zurück', style: AppStyles.appBarText),
               ),
             ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            label: const Text('Zurück', style: AppStyles.appBarText),
-          ),
+
+            SizedBox(
+              width: 180,
+              height: 56,
+              child: TextButton.icon(
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xFFFFB74D),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () {
+                  // Profil öffnen
+                },
+                icon: const Icon(Icons.person_outline, color: Colors.black87, size: 24),
+                label: const Text('Profil', style: AppStyles.label),
+              ),
+            ),
+          ],
         ),
       ),
 
