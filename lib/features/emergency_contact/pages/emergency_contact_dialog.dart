@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:notfallbereit/features/alert/pages/custom_alert.dart';
 import 'package:http/http.dart' as http;
+import 'package:notfallbereit/features/emergency_contact/pages/change_emergency_contact.dart';
 import '../../../core/api/api_config.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 
@@ -22,7 +23,7 @@ class EmergencyContactDialog extends StatelessWidget {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'id': emergencyContactId,
-          'emergencyProfileId': emergencyProfileId
+          'emergencyProfileId': emergencyProfileId,
         }),
       );
 
@@ -77,10 +78,7 @@ class EmergencyContactDialog extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.05),
 
-              Text(
-                'Telefonnummer:',
-                style: AppStyles.labelNormalUnderline,
-              ),
+              Text('Telefonnummer:', style: AppStyles.labelNormalUnderline),
 
               SizedBox(height: screenHeight * 0.02),
 
@@ -91,10 +89,7 @@ class EmergencyContactDialog extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.04),
 
-              Text(
-                'Beziehung:',
-                style: AppStyles.labelNormalUnderline,
-              ),
+              Text('Beziehung:', style: AppStyles.labelNormalUnderline),
 
               SizedBox(height: screenHeight * 0.02),
 
@@ -136,7 +131,30 @@ class EmergencyContactDialog extends StatelessWidget {
                       alignment: Alignment.center,
                       child: ElevatedButton(
                         style: AppStyles.whiteButton,
-                        onPressed: () => changeEmergencyContactInformation(),
+                        onPressed: () async {
+                          final result = await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => ChangeEmergencyContactWindow(
+                              emergencyProfileId:
+                                  emergencyContact['profile_id'],
+                              emergencyContactId: emergencyContact['id'],
+                              firstName: emergencyContact['first_name']
+                                  .toString(),
+                              lastName: emergencyContact['last_name']
+                                  .toString(),
+                              phoneNumber: emergencyContact['phone'].toString(),
+                              relationship:
+                                  emergencyContact['relationship']
+                                      ?.toString() ??
+                                  '',
+                            ),
+                          );
+
+                          if (result == true) {
+                            Navigator.pop(context, true);
+                          }
+                        },
                         child: const Text(
                           'Informationen bearbeiten',
                           style: AppStyles.buttonTextBlack,

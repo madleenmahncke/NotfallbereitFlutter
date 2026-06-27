@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:notfallbereit/features/alert/pages/custom_alert.dart';
 import 'package:http/http.dart' as http;
+import 'package:notfallbereit/features/allergy/pages/change_allergy_information.dart';
 import '../../../core/api/api_config.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 
@@ -22,7 +23,7 @@ class AllergyDialog extends StatelessWidget {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'id': allergyId,
-          'emergencyProfileId': emergencyProfileId
+          'emergencyProfileId': emergencyProfileId,
         }),
       );
 
@@ -78,17 +79,11 @@ class AllergyDialog extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.05),
 
-              Text(
-                'Notizen:',
-                style: AppStyles.labelNormalUnderline,
-              ),
+              Text('Notizen:', style: AppStyles.labelNormalUnderline),
 
               SizedBox(height: screenHeight * 0.02),
 
-              Text(
-                '${allergy['notes'].toString()}',
-                style: AppStyles.label,
-              ),
+              Text('${allergy['notes'].toString()}', style: AppStyles.label),
 
               SizedBox(height: screenHeight * 0.05),
 
@@ -123,7 +118,22 @@ class AllergyDialog extends StatelessWidget {
                       alignment: Alignment.center,
                       child: ElevatedButton(
                         style: AppStyles.whiteButton,
-                        onPressed: () => changeAllergyInformation(),
+                        onPressed: () async {
+                          final result = await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => ChangeAllergyWindow(
+                              emergencyProfileId: allergy['profile_id'],
+                              allergyId: allergy['id'],
+                              allergen: allergy['allergen'].toString(),
+                              notes: allergy['notes']?.toString() ?? '',
+                            ),
+                          );
+
+                          if (result == true) {
+                            Navigator.pop(context, true);
+                          }
+                        },
                         child: const Text(
                           'Informationen bearbeiten',
                           style: AppStyles.buttonTextBlack,

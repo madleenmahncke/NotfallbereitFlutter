@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:notfallbereit/features/alert/pages/custom_alert.dart';
 import 'package:http/http.dart' as http;
+import 'package:notfallbereit/features/medication/pages/change_medication_information.dart';
 import '../../../core/api/api_config.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 
@@ -123,7 +124,23 @@ class MedicationDialog extends StatelessWidget {
                       alignment: Alignment.center,
                       child: ElevatedButton(
                         style: AppStyles.whiteButton,
-                        onPressed: () => changeMedicationInformation(),
+                        onPressed: () async {
+                          final result = await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => ChangeMedicationWindow(
+                              emergencyProfileId: medication['profile_id'],
+                              medicationId: medication['id'],
+                              name: medication['name'].toString(),
+                              dosage: medication['dosage'].toString(),
+                              notes: medication['notes']?.toString() ?? '',
+                            ),
+                          );
+
+                          if (result == true) {
+                            Navigator.pop(context, true);
+                          }
+                        },
                         child: const Text(
                           'Informationen bearbeiten',
                           style: AppStyles.buttonTextBlack,
