@@ -91,6 +91,14 @@ class MedicationDialog extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.05),
 
+              Text('Dosis:', style: AppStyles.labelNormalUnderline),
+
+              SizedBox(height: screenHeight * 0.02),
+
+              Text('${medication['dosage'].toString()}', style: AppStyles.label),
+
+              SizedBox(height: screenHeight * 0.04),
+
               Text('Notizen:', style: AppStyles.labelNormalUnderline),
 
               SizedBox(height: screenHeight * 0.02),

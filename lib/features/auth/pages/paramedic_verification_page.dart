@@ -62,7 +62,7 @@ class _ParamedicVerificationPageState extends State<ParamedicVerificationPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => ParamedicScanQrCode()),
-        );sobel(src)
+        );
 
         debugPrint('Verifizierung erfolgreich. UserId: $userId');
       }

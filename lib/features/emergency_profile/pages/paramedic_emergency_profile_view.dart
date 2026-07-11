@@ -2,29 +2,35 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:notfallbereit/features/emergency_contact/pages/emergency_contact_dialog.dart';
-import 'package:notfallbereit/features/medication/pages/medication_dialog.dart';
+import 'package:notfallbereit/features/emergency_contact/pages/paramedic_emergency_contact_dialog.dart';
+import 'package:notfallbereit/features/medication/pages/paramedic_medication_dialog.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
-import '../../allergy/pages/allergy_dialog.dart';
+import '../../allergy/pages/paramedic_allergy_dialog.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ParamedicEmergencyProfileView extends StatefulWidget {
-  final int userId;
-  final int emergencyProfileId;
+  final Map<String, dynamic> emergencyProfile;
+  final List<dynamic> allergies;
+  final List<dynamic> medications;
+  final List<dynamic> emergencyContacts;
 
   const ParamedicEmergencyProfileView({
     super.key,
-    required this.userId,
-    required this.emergencyProfileId,
+    required this.emergencyProfile,
+    required this.allergies,
+    required this.medications,
+    required this.emergencyContacts,
   });
 
   @override
-  State<ParamedicEmergencyProfileView> createState() => _ParamedicEmergencyProfileViewState();
+  State<ParamedicEmergencyProfileView> createState() =>
+      _ParamedicEmergencyProfileViewState();
 }
 
-class _ParamedicEmergencyProfileViewState extends State<ParamedicEmergencyProfileView> {
+class _ParamedicEmergencyProfileViewState
+    extends State<ParamedicEmergencyProfileView> {
   List<dynamic> allergies = [];
   List<dynamic> medications = [];
   List<dynamic> emergencyContacts = [];
@@ -40,36 +46,11 @@ class _ParamedicEmergencyProfileViewState extends State<ParamedicEmergencyProfil
   void initState() {
     super.initState();
 
-    loadEmergencyProfile();
-  }
+    emergencyProfile = widget.emergencyProfile;
 
-  Future<void> loadEmergencyProfile() async {
-    try {
-      final token = await storage.read(key: "jwt");
-
-      final response = await http.get(
-        Uri.parse(
-          '${ApiConfig.baseUrl}/api/emergencyProfile/${widget.userId}/${widget.emergencyProfileId}'
-        ),
-          headers: {
-            "Authorization": "Bearer $token",
-          }
-      );
-
-      final data = jsonDecode(response.body);
-
-      debugPrint(data.toString());
-      debugPrint(data['emergencyProfile'].toString());
-
-      setState(() {
-        emergencyProfile = data['emergencyProfile'];
-        allergies = data['allergies'] ?? [];
-        medications = data['medications'] ?? [];
-        emergencyContacts = data['emergencyContacts'] ?? [];
-      });
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+    allergies = widget.allergies;
+    medications = widget.medications;
+    emergencyContacts = widget.emergencyContacts;
   }
 
   @override
@@ -106,7 +87,11 @@ class _ParamedicEmergencyProfileViewState extends State<ParamedicEmergencyProfil
                   ),
                 ),
                 onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                  size: 24,
+                ),
                 label: const Text('Zurück', style: AppStyles.appBarText),
               ),
             ),
@@ -263,12 +248,8 @@ class _ParamedicEmergencyProfileViewState extends State<ParamedicEmergencyProfil
                         final result = await showDialog(
                           context: context,
                           barrierDismissible: false,
-                          builder: (_) => AllergyDialog(allergy: item),
+                          builder: (_) => ParamedicAllergyDialog(allergy: item),
                         );
-
-                        if (result == true) {
-                          await loadEmergencyProfile();
-                        }
                       },
                       child: Text(
                         '› ${item['allergen']}',
@@ -278,17 +259,15 @@ class _ParamedicEmergencyProfileViewState extends State<ParamedicEmergencyProfil
                   }
 
                   if (title == 'Medikamente:') {
+                    debugPrint("Titel: $title");
+                    debugPrint(item.toString());
                     return TextButton(
                       onPressed: () async {
                         final result = await showDialog(
                           context: context,
                           barrierDismissible: false,
-                          builder: (_) => MedicationDialog(medication: item),
+                          builder: (_) => ParamedicMedicationDialog(medication: item),
                         );
-
-                        if (result == true) {
-                          await loadEmergencyProfile();
-                        }
                       },
                       child: Text('› ${item['name']}', style: AppStyles.text),
                     );
@@ -301,12 +280,8 @@ class _ParamedicEmergencyProfileViewState extends State<ParamedicEmergencyProfil
                           context: context,
                           barrierDismissible: false,
                           builder: (_) =>
-                              EmergencyContactDialog(emergencyContact: item),
+                              ParamedicEmergencyContactDialog(emergencyContact: item),
                         );
-
-                        if (result == true) {
-                          await loadEmergencyProfile();
-                        }
                       },
                       child: Text(
                         '› ${item['first_name']} ${item['last_name']}',

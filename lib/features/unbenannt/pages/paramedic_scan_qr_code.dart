@@ -6,7 +6,8 @@ import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../../emergency_profile/pages/paramedic_emergency_profile_view.dart'
+import '../../emergency_profile/pages/paramedic_emergency_profile_view.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ParamedicScanQrCode extends StatefulWidget {
   const ParamedicScanQrCode({super.key});
@@ -16,12 +17,12 @@ class ParamedicScanQrCode extends StatefulWidget {
 }
 
 class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _qrCodeUuidController = TextEditingController();
+
+  final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   bool _loading = false;
   String? _message;
-  final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   Future<void> login() async {
     setState(() {
@@ -30,13 +31,16 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
     });
 
     try {
-      final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/api/auth/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': _emailController.text,
-          'password': _passwordController.text,
-        }),
+      final token = await storage.read(key: "jwt");
+
+      final response = await http.get(
+        Uri.parse(
+          '${ApiConfig.baseUrl}/api/emergencyProfile/qrCode/${_qrCodeUuidController.text}',
+        ),
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+        },
       );
 
       // TODO: richtige Fehlermeldung einbauen mit Alerts
@@ -49,27 +53,22 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
         _message = data['message'];
       });
 
-      if (response.statusCode == 200) {
-        final int userId = data['userId'];
-        final String token = data['token'];
+      if (response.statusCode == 201) {
+        final int emergencyProfileId = data['emergencyProfile']['id'];
 
-        await storage.write(key: "jwt", value: token);
-
-        if (data["role"] != "PARAMEDIC") {
-          setState(() {
-            _message = "Bitte kontaktieren Sie den Support.";
-          });
-          return;
-        } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => ParamedicEmergencyProfileView(userId: , qr_code_uuid: ,),
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ParamedicEmergencyProfileView(
+              emergencyProfile: data['emergencyProfile'],
+              allergies: data['allergies'],
+              medications: data['medications'],
+              emergencyContacts: data['emergencyContacts']
             ),
-          );
-        }
+          ),
+        );
 
-        debugPrint('Login erfolgreich. UserId: $userId');
+        debugPrint('Scan erfolgreich. EmergencyProfileId: $emergencyProfileId');
       }
     } catch (e) {
       setState(() {
@@ -138,7 +137,7 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
 
                   // Label E-Mail
                   AutoSizeText(
-                    'E-Mail:',
+                    'UUID eingeben zum Simulieren:',
                     style: AppStyles.label,
                     maxLines: 1,
                     minFontSize: 24,
@@ -148,40 +147,21 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
 
                   // TextField E-Mail
                   TextField(
-                    controller: _emailController,
+                    controller: _qrCodeUuidController,
                     maxLength: 255,
                     style: AppStyles.inputStyle,
-                    decoration: AppStyles.textField('Hier E-Mail eingeben...'),
-                  ),
-
-                  SizedBox(height: screenHeight * 0.07),
-
-                  // Label Password
-                  AutoSizeText(
-                    'Passwort:',
-                    style: AppStyles.label,
-                    maxLines: 1,
-                    minFontSize: 24,
-                  ),
-
-                  SizedBox(height: screenHeight * 0.02),
-
-                  // TextField Password
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    style: AppStyles.inputStyle,
                     decoration: AppStyles.textField(
-                      'Hier Passwort eingeben...',
+                      'Hier UUID für Simulation eingeben...',
                     ),
                   ),
-
-                  SizedBox(height: screenHeight * 0.08),
 
                   ElevatedButton(
                     onPressed: () => login(),
                     style: AppStyles.button,
-                    child: Text('Anmelden', style: AppStyles.buttonText),
+                    child: Text(
+                      'Scannen simulieren',
+                      style: AppStyles.buttonText,
+                    ),
                   ),
 
                   SizedBox(height: screenHeight * 0.05),
