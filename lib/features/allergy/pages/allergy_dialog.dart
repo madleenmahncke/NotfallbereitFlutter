@@ -5,22 +5,30 @@ import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/allergy/pages/change_allergy_information.dart';
 import '../../../core/api/api_config.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AllergyDialog extends StatelessWidget {
   final Map<String, dynamic> allergy;
 
   const AllergyDialog({super.key, required this.allergy});
 
+  final storage = const FlutterSecureStorage();
+
   Future<void> deleteAllergy(BuildContext context) async {
     final allergyId = allergy['id'];
     final emergencyProfileId = allergy['profile_id'];
 
     try {
+      final token = await storage.read(key: "jwt");
+
       final response = await http.delete(
         Uri.parse(
           '${ApiConfig.baseUrl}/api/allergy/$emergencyProfileId/$allergyId',
         ),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           'id': allergyId,
           'emergencyProfileId': emergencyProfileId,
@@ -63,7 +71,11 @@ class AllergyDialog extends StatelessWidget {
                   child: TextButton.icon(
                     onPressed: () => Navigator.pop(context),
                     style: AppStyles.fakeAppBar,
-                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                     label: const Text('Zurück', style: AppStyles.appBarText),
                   ),
                 ),

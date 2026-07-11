@@ -2,13 +2,52 @@ import 'package:flutter/material.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import 'package:pdf/pdf.dart';
 
 class QRCodeDialog extends StatelessWidget {
   final Map<String, dynamic> emergencyProfile;
 
   const QRCodeDialog({super.key, required this.emergencyProfile});
 
-  Future<void> downloadQRCode(BuildContext context) async {}
+  Future<void> downloadQRCode(BuildContext context) async {
+    final pdf = pw.Document();
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (context) {
+          return pw.Center(
+            child: pw.Column(
+              children: [
+                pw.Text(
+                  "Notfallbereit",
+                  style: pw.TextStyle(
+                    fontSize: 24,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
+                pw.SizedBox(height: 20),
+                pw.BarcodeWidget(
+                  data: emergencyProfile['qr_code_uuid'],
+                  barcode: pw.Barcode.qrCode(),
+                  width: 250,
+                  height: 250,
+                ),
+
+                pw.Text(
+                  "${emergencyProfile['first_name']} ${emergencyProfile['last_name']}",
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+
+    await Printing.layoutPdf(onLayout: (_) async => pdf.save());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +70,11 @@ class QRCodeDialog extends StatelessWidget {
                   child: TextButton.icon(
                     onPressed: () => Navigator.pop(context),
                     style: AppStyles.fakeAppBar,
-                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                     label: const Text('Zurück', style: AppStyles.appBarText),
                   ),
                 ),

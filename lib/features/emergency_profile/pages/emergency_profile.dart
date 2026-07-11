@@ -10,6 +10,7 @@ import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
 import '../../allergy/pages/allergy_dialog.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class EmergencyProfilePage extends StatefulWidget {
   final int userId;
@@ -32,6 +33,8 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
 
   Map<String, dynamic>? emergencyProfile;
 
+  final storage = const FlutterSecureStorage();
+
   //bool _loading = false;
   //String? _message;
 
@@ -44,10 +47,15 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
 
   Future<void> loadEmergencyProfile() async {
     try {
+      final token = await storage.read(key: "jwt");
+
       final response = await http.get(
         Uri.parse(
-          '${ApiConfig.baseUrl}/api/emergencyProfile/${widget.userId}/${widget.emergencyProfileId}',
+          '${ApiConfig.baseUrl}/api/emergencyProfile/${widget.userId}/${widget.emergencyProfileId}'
         ),
+          headers: {
+            "Authorization": "Bearer $token",
+          }
       );
 
       final data = jsonDecode(response.body);
@@ -71,7 +79,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // GPT HELP
+    // TODO: Return to Home Page with error message
     if (emergencyProfile == null) {
       return const Center(child: CircularProgressIndicator());
     }

@@ -6,6 +6,7 @@ import 'package:notfallbereit/features/emergency_profile/pages/emergency_profile
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class CreateEmergencyProfilePage extends StatefulWidget {
   final int userId;
@@ -17,11 +18,14 @@ class CreateEmergencyProfilePage extends StatefulWidget {
       _CreateEmergencyProfilePageState();
 }
 
-class _CreateEmergencyProfilePageState extends State<CreateEmergencyProfilePage> {
+class _CreateEmergencyProfilePageState
+    extends State<CreateEmergencyProfilePage> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _adressController = TextEditingController();
   final _zipCodeController = TextEditingController();
+
+  final storage = const FlutterSecureStorage();
 
   bool _loading = false;
   String? _message;
@@ -33,9 +37,14 @@ class _CreateEmergencyProfilePageState extends State<CreateEmergencyProfilePage>
     });
 
     try {
+      final token = await storage.read(key: "jwt");
+
       final response = await http.post(
         Uri.parse('${ApiConfig.baseUrl}/api/emergencyProfile/${widget.userId}'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           'firstName': _firstNameController.text,
           'lastName': _lastNameController.text,

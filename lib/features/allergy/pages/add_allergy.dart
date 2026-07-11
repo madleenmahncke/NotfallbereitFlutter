@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import '../../../core/api/api_config.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AddAllergyWindow extends StatefulWidget {
   final int emergencyProfileId;
@@ -18,6 +19,8 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
   final _allergyNameController = TextEditingController();
   final _allergyNotesController = TextEditingController();
 
+  final storage = const FlutterSecureStorage();
+
   bool _loading = false;
   String? _message;
 
@@ -28,9 +31,16 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
     });
 
     try {
+      final token = await storage.read(key: "jwt");
+
       final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/api/allergy/${widget.emergencyProfileId}'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse(
+          '${ApiConfig.baseUrl}/api/allergy/${widget.emergencyProfileId}',
+        ),
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           'name': _allergyNameController.text,
           'notes': _allergyNotesController.text,
@@ -81,7 +91,11 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
                   child: TextButton.icon(
                     onPressed: () => Navigator.pop(context),
                     style: AppStyles.fakeAppBar,
-                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                     label: const Text('Zurück', style: AppStyles.appBarText),
                   ),
                 ),

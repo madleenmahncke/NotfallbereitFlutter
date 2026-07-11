@@ -5,22 +5,30 @@ import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/emergency_contact/pages/change_emergency_contact.dart';
 import '../../../core/api/api_config.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class EmergencyContactDialog extends StatelessWidget {
   final Map<String, dynamic> emergencyContact;
 
   const EmergencyContactDialog({super.key, required this.emergencyContact});
 
+  final storage = const FlutterSecureStorage();
+
   Future<void> deleteEmergencyContact(BuildContext context) async {
     final emergencyContactId = emergencyContact['id'];
     final emergencyProfileId = emergencyContact['profile_id'];
 
     try {
+      final token = await storage.read(key: "jwt");
+
       final response = await http.delete(
         Uri.parse(
           '${ApiConfig.baseUrl}/api/emergencyContact/$emergencyProfileId/$emergencyContactId',
         ),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           'id': emergencyContactId,
           'emergencyProfileId': emergencyProfileId,
@@ -63,7 +71,11 @@ class EmergencyContactDialog extends StatelessWidget {
                   child: TextButton.icon(
                     onPressed: () => Navigator.pop(context),
                     style: AppStyles.fakeAppBar,
-                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                     label: const Text('Zurück', style: AppStyles.appBarText),
                   ),
                 ),

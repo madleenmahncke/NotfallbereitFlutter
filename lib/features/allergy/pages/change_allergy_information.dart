@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import '../../../core/api/api_config.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ChangeAllergyWindow extends StatefulWidget {
   final int emergencyProfileId;
@@ -27,6 +28,8 @@ class _ChangeAllergyWindowState extends State<ChangeAllergyWindow> {
   var _allergyNameController = TextEditingController();
   var _allergyNotesController = TextEditingController();
 
+  final storage = const FlutterSecureStorage();
+
   @override
   void initState() {
     super.initState();
@@ -46,9 +49,16 @@ class _ChangeAllergyWindowState extends State<ChangeAllergyWindow> {
     });
 
     try {
+      final token = await storage.read(key: "jwt");
+
       final response = await http.put(
-        Uri.parse('${ApiConfig.baseUrl}/api/allergy/${widget.emergencyProfileId}/${widget.allergyId}'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse(
+          '${ApiConfig.baseUrl}/api/allergy/${widget.emergencyProfileId}/${widget.allergyId}',
+        ),
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           'emergencyProfileId': widget.emergencyProfileId,
           'id': widget.allergyId,
@@ -101,7 +111,11 @@ class _ChangeAllergyWindowState extends State<ChangeAllergyWindow> {
                   child: TextButton.icon(
                     onPressed: () => Navigator.pop(context),
                     style: AppStyles.fakeAppBar,
-                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                     label: const Text('Zurück', style: AppStyles.appBarText),
                   ),
                 ),

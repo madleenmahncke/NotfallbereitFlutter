@@ -5,25 +5,33 @@ import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/medication/pages/change_medication_information.dart';
 import '../../../core/api/api_config.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MedicationDialog extends StatelessWidget {
   final Map<String, dynamic> medication;
 
   const MedicationDialog({super.key, required this.medication});
 
+  final storage = const FlutterSecureStorage();
+
   Future<void> deleteMedication(BuildContext context) async {
     final medicationId = medication['id'];
     final emergencyProfileId = medication['profile_id'];
 
     try {
+      final token = await storage.read(key: "jwt");
+
       final response = await http.delete(
         Uri.parse(
           '${ApiConfig.baseUrl}/api/medication/$emergencyProfileId/$medicationId',
         ),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           'id': medicationId,
-          'emergencyProfileId': emergencyProfileId
+          'emergencyProfileId': emergencyProfileId,
         }),
       );
 
@@ -63,7 +71,11 @@ class MedicationDialog extends StatelessWidget {
                   child: TextButton.icon(
                     onPressed: () => Navigator.pop(context),
                     style: AppStyles.fakeAppBar,
-                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                     label: const Text('Zurück', style: AppStyles.appBarText),
                   ),
                 ),
@@ -79,17 +91,11 @@ class MedicationDialog extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.05),
 
-              Text(
-                'Notizen:',
-                style: AppStyles.labelNormalUnderline,
-              ),
+              Text('Notizen:', style: AppStyles.labelNormalUnderline),
 
-                            SizedBox(height: screenHeight * 0.02),
+              SizedBox(height: screenHeight * 0.02),
 
-              Text(
-                '${medication['notes'].toString()}',
-                style: AppStyles.label,
-              ),
+              Text('${medication['notes'].toString()}', style: AppStyles.label),
 
               SizedBox(height: screenHeight * 0.05),
 

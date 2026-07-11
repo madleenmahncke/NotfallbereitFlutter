@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import '../../../core/api/api_config.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ChangeMedicationWindow extends StatefulWidget {
   final int emergencyProfileId;
@@ -30,6 +31,8 @@ class _ChangeMedicationWindowState extends State<ChangeMedicationWindow> {
   var _medicationDosageController = new TextEditingController();
   var _medicationNotesController = TextEditingController();
 
+  final storage = const FlutterSecureStorage();
+
   @override
   void initState() {
     super.initState();
@@ -49,11 +52,16 @@ class _ChangeMedicationWindowState extends State<ChangeMedicationWindow> {
     });
 
     try {
+      final token = await storage.read(key: "jwt");
+
       final response = await http.put(
         Uri.parse(
           '${ApiConfig.baseUrl}/api/medication/${widget.emergencyProfileId}/${widget.medicationId}',
         ),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": "Bearer $token",
+        },
         body: jsonEncode({
           'emergencyProfileId': widget.emergencyProfileId,
           'id': widget.medicationId,
@@ -107,7 +115,11 @@ class _ChangeMedicationWindowState extends State<ChangeMedicationWindow> {
                   child: TextButton.icon(
                     onPressed: () => Navigator.pop(context),
                     style: AppStyles.fakeAppBar,
-                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                     label: const Text('Zurück', style: AppStyles.appBarText),
                   ),
                 ),

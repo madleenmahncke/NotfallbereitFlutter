@@ -7,6 +7,7 @@ import 'package:notfallbereit/features/emergency_profile/pages/emergency_profile
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _loading = false;
   String? _message;
+  final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   Future<void> login() async {
     setState(() {
@@ -52,6 +54,10 @@ class _LoginPageState extends State<LoginPage> {
         final bool hasEmergencyProfile = data['hasEmergencyProfile'];
         final int userId = data['userId'];
         final int? emergencyProfileId = data['emergencyProfileId'];
+        debugPrint("Vor Token ");
+        final String token = data['token'];
+
+        await storage.write(key: "jwt", value: token);
 
         if (hasEmergencyProfile) {
           Navigator.pushReplacement(
@@ -72,15 +78,14 @@ class _LoginPageState extends State<LoginPage> {
           );
         }
         debugPrint('Login erfolgreich. UserId: $userId');
-
-        // TODO:
-        // JWT speichern
-        // Zur HomePage navigieren
       }
     } catch (e) {
       setState(() {
         _message = e.toString();
       });
+
+        debugPrint("Storage-Fehler: $e");
+
     } finally {
       setState(() {
         _loading = false;

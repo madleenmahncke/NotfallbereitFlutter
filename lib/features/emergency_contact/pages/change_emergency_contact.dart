@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import '../../../core/api/api_config.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ChangeEmergencyContactWindow extends StatefulWidget {
   final int emergencyProfileId;
@@ -35,6 +36,8 @@ class _ChangeEmergencyContactWindowState
   var _emergencyContactPhoneNumberController = TextEditingController();
   var _emergencyContactRelationshipController = TextEditingController();
 
+  final storage = const FlutterSecureStorage();
+
   @override
   void initState() {
     super.initState();
@@ -63,11 +66,16 @@ class _ChangeEmergencyContactWindowState
     });
 
     try {
+      final token = await storage.read(key: "jwt");
+
       final response = await http.put(
         Uri.parse(
           '${ApiConfig.baseUrl}/api/emergencyContact/${widget.emergencyProfileId}/${widget.emergencyContactId}',
         ),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           'emergencyProfileId': widget.emergencyProfileId,
           'id': widget.emergencyContactId,
@@ -122,7 +130,11 @@ class _ChangeEmergencyContactWindowState
                   child: TextButton.icon(
                     onPressed: () => Navigator.pop(context),
                     style: AppStyles.fakeAppBar,
-                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                     label: const Text('Zurück', style: AppStyles.appBarText),
                   ),
                 ),

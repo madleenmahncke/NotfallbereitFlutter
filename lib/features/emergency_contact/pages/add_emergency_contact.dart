@@ -4,6 +4,7 @@ import 'package:notfallbereit/theme/app_styles.dart';
 import '../../../core/api/api_config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AddEmergencyContactWindow extends StatefulWidget {
   final int emergencyProfileId;
@@ -23,6 +24,8 @@ class _AddEmergencyContactState extends State<AddEmergencyContactWindow> {
   final _phoneNumberController = TextEditingController();
   final _relationshipController = TextEditingController();
 
+  final storage = const FlutterSecureStorage();
+
   bool _loading = false;
   String? _message;
 
@@ -33,16 +36,21 @@ class _AddEmergencyContactState extends State<AddEmergencyContactWindow> {
     });
 
     try {
+      final token = await storage.read(key: "jwt");
+
       final response = await http.post(
         Uri.parse(
           '${ApiConfig.baseUrl}/api/emergencyContact/${widget.emergencyProfileId}',
         ),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           'firstName': _firstNameController.text,
           'lastName': _lastNameController.text,
           'phoneNumber': _phoneNumberController.text,
-          'relationship': _relationshipController.text 
+          'relationship': _relationshipController.text,
         }),
       );
 
@@ -90,7 +98,11 @@ class _AddEmergencyContactState extends State<AddEmergencyContactWindow> {
                   child: TextButton.icon(
                     onPressed: () => Navigator.pop(context),
                     style: AppStyles.fakeAppBar,
-                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                     label: const Text('Zurück', style: AppStyles.appBarText),
                   ),
                 ),
