@@ -2,21 +2,20 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:notfallbereit/features/emergency_profile/pages/create_emergency_profile.dart';
-import 'package:notfallbereit/features/emergency_profile/pages/emergency_profile.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../emergency_profile/pages/paramedic_emergency_profile_view.dart'
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class ParamedicScanQrCode extends StatefulWidget {
+  const ParamedicScanQrCode({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<ParamedicScanQrCode> createState() => _ParamedicScanQrCodeState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -51,31 +50,25 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       if (response.statusCode == 200) {
-        final bool hasEmergencyProfile = data['hasEmergencyProfile'];
         final int userId = data['userId'];
-        final int? emergencyProfileId = data['emergencyProfileId'];
         final String token = data['token'];
 
         await storage.write(key: "jwt", value: token);
 
-        if (hasEmergencyProfile) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => EmergencyProfilePage(
-                userId: userId,
-                emergencyProfileId: emergencyProfileId!,
-              ),
-            ),
-          );
+        if (data["role"] != "PARAMEDIC") {
+          setState(() {
+            _message = "Bitte kontaktieren Sie den Support.";
+          });
+          return;
         } else {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (_) => CreateEmergencyProfilePage(userId: userId),
+              builder: (_) => ParamedicEmergencyProfileView(userId: , qr_code_uuid: ,),
             ),
           );
         }
+
         debugPrint('Login erfolgreich. UserId: $userId');
       }
     } catch (e) {
@@ -83,8 +76,7 @@ class _LoginPageState extends State<LoginPage> {
         _message = e.toString();
       });
 
-        debugPrint("Storage-Fehler: $e");
-
+      debugPrint("Storage-Fehler: $e");
     } finally {
       setState(() {
         _loading = false;
@@ -136,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   // Title Login
                   AutoSizeText(
-                    'ANMELDUNG',
+                    'QR-CODE SCANNEN',
                     style: AppStyles.title,
                     maxLines: 1,
                     minFontSize: 34,

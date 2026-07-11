@@ -2,41 +2,47 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:notfallbereit/features/emergency_profile/pages/create_emergency_profile.dart';
-import 'package:notfallbereit/features/emergency_profile/pages/emergency_profile.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../unbenannt/pages/paramedic_scan_qr_code.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class ParamedicVerificationPage extends StatefulWidget {
+  final int paramedicId;
+
+  const ParamedicVerificationPage({super.key, required this.paramedicId});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<ParamedicVerificationPage> createState() =>
+      _ParamedicVerificationPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+class _ParamedicVerificationPageState extends State<ParamedicVerificationPage> {
+  final _verificationCodeController = TextEditingController();
 
   bool _loading = false;
   String? _message;
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
-  Future<void> login() async {
+  Future<void> verify() async {
     setState(() {
       _loading = true;
       _message = null;
     });
 
     try {
+      final token = await storage.read(key: "jwt");
+
       final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/api/auth/login'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse('${ApiConfig.baseUrl}/api/auth/login/verifyParamedic'),
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
-          'email': _emailController.text,
-          'password': _passwordController.text,
+          'paramedicId': widget.paramedicId,
+          'verificationCode': _verificationCodeController.text,
         }),
       );
 
@@ -51,40 +57,21 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       if (response.statusCode == 200) {
-        final bool hasEmergencyProfile = data['hasEmergencyProfile'];
         final int userId = data['userId'];
-        final int? emergencyProfileId = data['emergencyProfileId'];
-        final String token = data['token'];
 
-        await storage.write(key: "jwt", value: token);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => ParamedicScanQrCode()),
+        );sobel(src)
 
-        if (hasEmergencyProfile) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => EmergencyProfilePage(
-                userId: userId,
-                emergencyProfileId: emergencyProfileId!,
-              ),
-            ),
-          );
-        } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => CreateEmergencyProfilePage(userId: userId),
-            ),
-          );
-        }
-        debugPrint('Login erfolgreich. UserId: $userId');
+        debugPrint('Verifizierung erfolgreich. UserId: $userId');
       }
     } catch (e) {
       setState(() {
         _message = e.toString();
       });
 
-        debugPrint("Storage-Fehler: $e");
-
+      debugPrint("Storage-Fehler: $e");
     } finally {
       setState(() {
         _loading = false;
@@ -136,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   // Title Login
                   AutoSizeText(
-                    'ANMELDUNG',
+                    'VERIFIZIERUNG',
                     style: AppStyles.title,
                     maxLines: 1,
                     minFontSize: 34,
@@ -146,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   // Label E-Mail
                   AutoSizeText(
-                    'E-Mail:',
+                    'Verifizierungscode:',
                     style: AppStyles.label,
                     maxLines: 1,
                     minFontSize: 24,
@@ -156,40 +143,20 @@ class _LoginPageState extends State<LoginPage> {
 
                   // TextField E-Mail
                   TextField(
-                    controller: _emailController,
+                    controller: _verificationCodeController,
                     maxLength: 255,
                     style: AppStyles.inputStyle,
-                    decoration: AppStyles.textField('Hier E-Mail eingeben...'),
-                  ),
-
-                  SizedBox(height: screenHeight * 0.07),
-
-                  // Label Password
-                  AutoSizeText(
-                    'Passwort:',
-                    style: AppStyles.label,
-                    maxLines: 1,
-                    minFontSize: 24,
-                  ),
-
-                  SizedBox(height: screenHeight * 0.02),
-
-                  // TextField Password
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    style: AppStyles.inputStyle,
                     decoration: AppStyles.textField(
-                      'Hier Passwort eingeben...',
+                      'Hier Verifizierungscode eingeben...',
                     ),
                   ),
 
                   SizedBox(height: screenHeight * 0.08),
 
                   ElevatedButton(
-                    onPressed: () => login(),
+                    onPressed: () => verify(),
                     style: AppStyles.button,
-                    child: Text('Anmelden', style: AppStyles.buttonText),
+                    child: Text('Verifizieren', style: AppStyles.buttonText),
                   ),
 
                   SizedBox(height: screenHeight * 0.05),

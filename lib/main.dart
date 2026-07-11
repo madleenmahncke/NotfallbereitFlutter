@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notfallbereit/features/auth/pages/paramedic_index.dart';
 
 import 'features/auth/pages/index.dart';
 
@@ -20,7 +21,8 @@ class NotfallbereitApp extends StatelessWidget {
         fontFamily: 'Agenor',
       ),
 
-      home: const Index(),
+      //home: const Index(),
+      home: const ParamedicIndex()
     );
   }
 }

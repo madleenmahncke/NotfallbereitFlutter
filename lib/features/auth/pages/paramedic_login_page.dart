@@ -2,21 +2,20 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:notfallbereit/features/emergency_profile/pages/create_emergency_profile.dart';
-import 'package:notfallbereit/features/emergency_profile/pages/emergency_profile.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../pages/paramedic_verification_page.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class ParamedicLoginPage extends StatefulWidget {
+  const ParamedicLoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<ParamedicLoginPage> createState() => _ParamedicLoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _ParamedicLoginPageState extends State<ParamedicLoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -51,40 +50,33 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       if (response.statusCode == 200) {
-        final bool hasEmergencyProfile = data['hasEmergencyProfile'];
-        final int userId = data['userId'];
-        final int? emergencyProfileId = data['emergencyProfileId'];
+        final int paramedicId = data['userId'];
         final String token = data['token'];
 
         await storage.write(key: "jwt", value: token);
 
-        if (hasEmergencyProfile) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => EmergencyProfilePage(
-                userId: userId,
-                emergencyProfileId: emergencyProfileId!,
-              ),
-            ),
-          );
+        if (data["role"] != "PARAMEDIC") {
+          setState(() {
+            _message = "Bitte kontaktieren Sie den Support.";
+          });
+          return;
         } else {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (_) => CreateEmergencyProfilePage(userId: userId),
+              builder: (_) => ParamedicVerificationPage(paramedicId: paramedicId,),
             ),
           );
         }
-        debugPrint('Login erfolgreich. UserId: $userId');
+
+        debugPrint('Login erfolgreich. paramedicId: $paramedicId');
       }
     } catch (e) {
       setState(() {
         _message = e.toString();
       });
 
-        debugPrint("Storage-Fehler: $e");
-
+      debugPrint("Storage-Fehler: $e");
     } finally {
       setState(() {
         _loading = false;
