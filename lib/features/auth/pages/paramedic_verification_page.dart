@@ -46,15 +46,9 @@ class _ParamedicVerificationPageState extends State<ParamedicVerificationPage> {
         }),
       );
 
-      // TODO: richtige Fehlermeldung einbauen mit Alerts
-      debugPrint('Status: ${response.statusCode}');
-      debugPrint(response.body);
-
       final data = jsonDecode(response.body);
 
-      setState(() {
-        _message = data['message'];
-      });
+      showSnackBar(data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode == 200) {
         final int userId = data['userId'];
@@ -77,6 +71,17 @@ class _ParamedicVerificationPageState extends State<ParamedicVerificationPage> {
         _loading = false;
       });
     }
+  }
+
+  void showSnackBar(String message, {bool error = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: error ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override

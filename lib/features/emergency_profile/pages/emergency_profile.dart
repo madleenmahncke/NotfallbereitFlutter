@@ -52,12 +52,13 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
 
       final response = await http.get(
         Uri.parse(
-          '${ApiConfig.baseUrl}/api/emergencyProfile/${widget.userId}/${widget.emergencyProfileId}',
+          '${ApiConfig.baseUrl}/api/emergencyProfile/getEmergencyProfile/${widget.emergencyProfileId}',
         ),
         headers: {"Authorization": "Bearer $token"},
       );
 
       final data = jsonDecode(response.body);
+      showSnackBar(data["message"], error: response.statusCode >= 400);
 
       setState(() {
         emergencyProfile = data['emergencyProfile'];
@@ -70,15 +71,21 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
     }
   }
 
+  void showSnackBar(String message, {bool error = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: error ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-
-    // TODO: Return to Home Page with error message
-    if (emergencyProfile == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFA8C3A0),
@@ -126,7 +133,10 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => UserProfilePage(emergencyProfile: emergencyProfile,)),
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          UserProfilePage(emergencyProfile: emergencyProfile),
+                    ),
                   );
                 },
                 icon: const Icon(
@@ -163,7 +173,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                   SizedBox(height: screenHeight * 0.05),
 
                   AutoSizeText(
-                    '${emergencyProfile!['first_name']} ${emergencyProfile!['last_name']}, ${emergencyProfile!['street']}, ${emergencyProfile!['zip_code']}',
+                    '${emergencyProfile!['first_name']} ${emergencyProfile!['last_name']}, ${emergencyProfile!['street_and_number']}, ${emergencyProfile!['location']}',
                     maxLines: 6,
                     minFontSize: 24,
                     style: AppStyles.label,

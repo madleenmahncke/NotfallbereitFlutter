@@ -41,6 +41,7 @@ class _ChangeAllergyWindowState extends State<ChangeAllergyWindow> {
 
   bool _loading = false;
   String? _message;
+  String? _errorMessage;
 
   Future<void> updateAllergy() async {
     setState(() {
@@ -68,10 +69,17 @@ class _ChangeAllergyWindowState extends State<ChangeAllergyWindow> {
       );
 
       final data = jsonDecode(response.body);
+      showSnackBar(data["message"], error: response.statusCode >= 400);
 
-      setState(() {
-        _message = data['message'];
-      });
+      if (response.statusCode >= 400) {
+        setState(() {
+          _errorMessage = data["message"];
+        });
+      } else {
+        setState(() {
+          _errorMessage = null;
+        });
+      }
 
       if (response.statusCode == 201) {
         Navigator.pop(context, true);
@@ -88,6 +96,17 @@ class _ChangeAllergyWindowState extends State<ChangeAllergyWindow> {
         _loading = false;
       });
     }
+  }
+
+  void showSnackBar(String message, {bool error = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: error ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
@@ -171,6 +190,13 @@ class _ChangeAllergyWindowState extends State<ChangeAllergyWindow> {
               ),
 
               SizedBox(height: screenHeight * 0.04),
+
+              if (_errorMessage != null)
+                Text(
+                  _errorMessage!,
+                  style: AppStyles.errorText,
+                  textAlign: TextAlign.center,
+                ),
 
               ElevatedButton(
                 style: AppStyles.button,

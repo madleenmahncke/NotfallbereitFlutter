@@ -58,6 +58,7 @@ class _ChangeEmergencyContactWindowState
 
   bool _loading = false;
   String? _message;
+  String? _errorMessage;
 
   Future<void> updateEmergencyContact() async {
     setState(() {
@@ -87,6 +88,17 @@ class _ChangeEmergencyContactWindowState
       );
 
       final data = jsonDecode(response.body);
+      showSnackBar(data["message"], error: response.statusCode >= 400);
+
+      if (response.statusCode >= 400) {
+        setState(() {
+          _errorMessage = data["message"];
+        });
+      } else {
+        setState(() {
+          _errorMessage = null;
+        });
+      }
 
       setState(() {
         _message = data['message'];
@@ -95,10 +107,7 @@ class _ChangeEmergencyContactWindowState
       if (response.statusCode == 201) {
         Navigator.pop(context, true);
       }
-    } catch (e, stackTrace) {
-      print('FEHLER: $e');
-      print(stackTrace);
-
+    } catch (e) {
       setState(() {
         _message = e.toString();
       });
@@ -107,6 +116,17 @@ class _ChangeEmergencyContactWindowState
         _loading = false;
       });
     }
+  }
+
+  void showSnackBar(String message, {bool error = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: error ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
@@ -232,6 +252,13 @@ class _ChangeEmergencyContactWindowState
               ),
 
               SizedBox(height: screenHeight * 0.04),
+
+              if (_errorMessage != null)
+                Text(
+                  _errorMessage!,
+                  style: AppStyles.errorText,
+                  textAlign: TextAlign.center,
+                ),
 
               ElevatedButton(
                 style: AppStyles.button,

@@ -38,6 +38,12 @@ class AppStyles {
     color: Color(0xFF20124D),
   );
 
+  static const TextStyle errorText = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    color: Colors.red,
+  );
+
   static final ButtonStyle button = ElevatedButton.styleFrom(
     backgroundColor: const Color(0xFF274E13),
     foregroundColor: Colors.white,
@@ -106,10 +112,7 @@ class AppStyles {
   }
 
   static final alertShape = RoundedRectangleBorder(
-  borderRadius: BorderRadius.circular(28),
-  side: const BorderSide(
-    color: Color(0xFFFF9900),
-    width: 2,
-  ),
-);
+    borderRadius: BorderRadius.circular(28),
+    side: const BorderSide(color: Color(0xFFFF9900), width: 2),
+  );
 }

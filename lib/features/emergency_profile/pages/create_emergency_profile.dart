@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/emergency_profile/pages/emergency_profile.dart';
@@ -21,7 +20,7 @@ class _CreateEmergencyProfilePageState
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _adressController = TextEditingController();
-  final _zipCodeController = TextEditingController();
+  final _locationController = TextEditingController();
 
   final storage = const FlutterSecureStorage();
 
@@ -38,7 +37,9 @@ class _CreateEmergencyProfilePageState
       final token = await storage.read(key: "jwt");
 
       final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/api/emergencyProfile/createEmergencyProfile'),
+        Uri.parse(
+          '${ApiConfig.baseUrl}/api/emergencyProfile/createEmergencyProfile',
+        ),
         headers: {
           "Authorization": "Bearer $token",
           'Content-Type': 'application/json',
@@ -46,19 +47,13 @@ class _CreateEmergencyProfilePageState
         body: jsonEncode({
           'firstName': _firstNameController.text,
           'lastName': _lastNameController.text,
-          'street': _adressController.text,
-          'zipCode': _zipCodeController.text,
+          'streetNumber': _adressController.text,
+          'location': _locationController.text,
         }),
       );
 
       final data = jsonDecode(response.body);
-
-      setState(() {
-        _message = data['message'];
-      });
-
-      debugPrint('Status: ${response.statusCode}');
-      debugPrint(response.body);
+      showSnackBar(data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode == 201) {
         final userId = data['userId'];
@@ -87,11 +82,15 @@ class _CreateEmergencyProfilePageState
     }
   }
 
-  void _openEmergencyProfile(BuildContext context) {
-    //Navigator.push(
-    //context,
-    //MaterialPageRoute(builder: (_) => const EmergencyProfilePage()),
-    //);
+  void showSnackBar(String message, {bool error = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: error ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
@@ -190,7 +189,7 @@ class _CreateEmergencyProfilePageState
 
                   // Label adress
                   AutoSizeText(
-                    'Adresse:',
+                    'Adresse und Hausnummer:',
                     style: AppStyles.label,
                     maxLines: 1,
                     minFontSize: 24,
@@ -202,7 +201,9 @@ class _CreateEmergencyProfilePageState
                   TextField(
                     controller: _adressController,
                     style: AppStyles.inputStyle,
-                    decoration: AppStyles.textField('Hier Adresse eingeben...'),
+                    decoration: AppStyles.textField(
+                      'Hier Adresse und Hausnummer eingeben...',
+                    ),
                   ),
 
                   SizedBox(height: screenHeight * 0.07),
@@ -219,7 +220,7 @@ class _CreateEmergencyProfilePageState
 
                   // TextField zip code and city
                   TextField(
-                    controller: _zipCodeController,
+                    controller: _locationController,
                     style: AppStyles.inputStyle,
                     decoration: AppStyles.textField(
                       'Hier Postleitzahl und Ort eingeben eingeben...',

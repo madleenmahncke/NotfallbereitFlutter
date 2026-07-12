@@ -41,12 +41,9 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       final data = jsonDecode(response.body);
+      showSnackBar(data["message"], error: response.statusCode >= 400);
 
-      setState(() {
-        _message = data['message'];
-      });
-
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         final bool hasEmergencyProfile = data['hasEmergencyProfile'];
         final int userId = data['userId'];
         final int? emergencyProfileId = data['emergencyProfileId'];
@@ -67,25 +64,34 @@ class _LoginPageState extends State<LoginPage> {
         } else {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-              builder: (_) => CreateEmergencyProfilePage(),
-            ),
+            MaterialPageRoute(builder: (_) => CreateEmergencyProfilePage()),
           );
         }
+
+        showSnackBar(data["message"], error: response.statusCode >= 400);
+
         debugPrint('Login erfolgreich. UserId: $userId');
       }
     } catch (e) {
       setState(() {
         _message = e.toString();
       });
-
-        debugPrint("Storage-Fehler: $e");
-
     } finally {
       setState(() {
         _loading = false;
       });
     }
+  }
+
+  void showSnackBar(String message, {bool error = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: error ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override

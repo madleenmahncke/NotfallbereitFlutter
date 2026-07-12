@@ -49,9 +49,7 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
 
       final data = jsonDecode(response.body);
 
-      setState(() {
-        _message = data['message'];
-      });
+      showSnackBar(data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode == 201) {
         Navigator.pop(context, true);
@@ -68,6 +66,17 @@ class _AddAllergyWindowState extends State<AddAllergyWindow> {
         _loading = false;
       });
     }
+  }
+
+  void showSnackBar(String message, {bool error = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: error ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override

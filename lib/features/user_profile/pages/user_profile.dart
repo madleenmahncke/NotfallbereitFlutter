@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/auth/pages/index.dart';
@@ -41,6 +40,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       );
 
       final data = jsonDecode(response.body);
+      showSnackBar(data["message"], error: response.statusCode >= 400);
 
       setState(() {
         eMail = data['eMail'];
@@ -60,6 +60,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
         headers: {"Authorization": "Bearer $token"},
       );
 
+      final data = jsonDecode(response.body);
+      showSnackBar(data["message"], error: response.statusCode >= 400);
+
       if (response.statusCode == 200) {
         Navigator.pushReplacement(
           context,
@@ -71,6 +74,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
     } catch (e) {
       debugPrint(e.toString());
     }
+  }
+
+  void showSnackBar(String message, {bool error = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: error ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
@@ -188,7 +202,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
           children: const [
             Icon(Icons.folder_shared_outlined, size: 32),
             SizedBox(width: 10),
-            Text("Notfallmappendaten:", style: AppStyles.tableTitleUnderlined),
+            Text(
+              "Daten zur Notfallmappe:",
+              style: AppStyles.tableTitleUnderlined,
+            ),
           ],
         ),
 
@@ -200,12 +217,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
         _profileEntry(
           "Straße und Hausnummer",
-          widget.emergencyProfile!['street'],
+          widget.emergencyProfile!['street_and_number'],
         ),
 
         _profileEntry(
           "Postleitzahl und Ort",
-          widget.emergencyProfile!['zip_code'],
+          widget.emergencyProfile!['location'],
         ),
 
         // because Spacer() doesn't work on mobile
@@ -217,8 +234,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
             child: ElevatedButton(
               style: AppStyles.button,
               onPressed: () {},
-              child: const Text(
-                "NOTFALLMAPPENDATEN\nändern",
+              child: const AutoSizeText(
+                minFontSize: 26,
+                maxLines: 3,
+                "NOTFALLMAPPE bearbeiten",
                 textAlign: TextAlign.center,
                 style: AppStyles.buttonText,
               ),
@@ -244,7 +263,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           children: const [
             Icon(Icons.person_outline, size: 32),
             SizedBox(width: 10),
-            Text("Anmeldedaten:", style: AppStyles.tableTitleUnderlined),
+            Text("Daten zur Anmeldung:", style: AppStyles.tableTitleUnderlined),
           ],
         ),
 
@@ -263,8 +282,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
             child: ElevatedButton(
               style: AppStyles.button,
               onPressed: () {},
-              child: const Text(
-                "ANMELDEDATEN\nändern",
+              child: const AutoSizeText(
+                minFontSize: 26,
+                maxLines: 2,
+                "ANMELDUNG bearbeiten",
                 textAlign: TextAlign.center,
                 style: AppStyles.buttonText,
               ),
@@ -278,6 +299,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Widget _buildMobileLayout(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return SizedBox(
       child: Column(
         children: [
@@ -292,8 +315,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Widget _buildDesktopLayout(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return SizedBox(
-      height: 600,
+      height: screenHeight * 0.6,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -318,10 +343,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         text: TextSpan(
           style: AppStyles.text,
           children: [
-            TextSpan(
-              text: "$label: ",
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+            TextSpan(text: "$label: ", style: AppStyles.label),
             TextSpan(text: value),
           ],
         ),

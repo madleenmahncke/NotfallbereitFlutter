@@ -53,7 +53,7 @@ class ParamedicMedicationDialog extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.02),
 
-              Text('${medication['dosage'].toString()}', style: AppStyles.label),
+              Text('${medication['dosage']}', style: AppStyles.label),
 
               SizedBox(height: screenHeight * 0.04),
 
@@ -61,7 +61,7 @@ class ParamedicMedicationDialog extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.02),
 
-              Text('${medication['notes'].toString()}', style: AppStyles.label),
+              Text('${medication['notes']}', style: AppStyles.label),
 
               SizedBox(height: screenHeight * 0.05),
             ],

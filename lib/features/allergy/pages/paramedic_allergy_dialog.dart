@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:notfallbereit/features/alert/pages/custom_alert.dart';
-import 'package:http/http.dart' as http;
-import 'package:notfallbereit/features/allergy/pages/change_allergy_information.dart';
-import '../../../core/api/api_config.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 

@@ -46,9 +46,8 @@ class _RegisterPageState extends State<RegisterPage> {
       final data = jsonDecode(response.body);
 
       showSnackBar(data["message"], error: response.statusCode >= 400);
-      print("BIN VOR IF");
-      print(response.statusCode);
-      if (response.statusCode == 200) {
+      
+      if (response.statusCode == 201) {
         print("BIN IM IF");
         final userId = data['id'];
         final String token = data['token'];
@@ -62,10 +61,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
         debugPrint('Registrierung erfolgreich. UserId: $userId');
       }
-    } catch (e, stackTrace) {
-      print('FEHLER: $e');
-      print(stackTrace);
-
+    } catch (e) {
       setState(() {
         _message = e.toString();
       });

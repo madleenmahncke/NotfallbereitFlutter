@@ -7,7 +7,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../emergency_profile/pages/paramedic_emergency_profile_view.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ParamedicScanQrCode extends StatefulWidget {
   const ParamedicScanQrCode({super.key});
@@ -43,15 +42,8 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
         },
       );
 
-      // TODO: richtige Fehlermeldung einbauen mit Alerts
-      debugPrint('Status: ${response.statusCode}');
-      debugPrint(response.body);
-
       final data = jsonDecode(response.body);
-
-      setState(() {
-        _message = data['message'];
-      });
+      showSnackBar(data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode == 201) {
         final int emergencyProfileId = data['emergencyProfile']['id'];
@@ -63,7 +55,7 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
               emergencyProfile: data['emergencyProfile'],
               allergies: data['allergies'],
               medications: data['medications'],
-              emergencyContacts: data['emergencyContacts']
+              emergencyContacts: data['emergencyContacts'],
             ),
           ),
         );
@@ -81,6 +73,17 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
         _loading = false;
       });
     }
+  }
+
+  void showSnackBar(String message, {bool error = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: error ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override

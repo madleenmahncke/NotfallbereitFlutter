@@ -28,7 +28,7 @@ class ChangeMedicationWindow extends StatefulWidget {
 
 class _ChangeMedicationWindowState extends State<ChangeMedicationWindow> {
   var _medicationNameController = TextEditingController();
-  var _medicationDosageController = new TextEditingController();
+  var _medicationDosageController = TextEditingController();
   var _medicationNotesController = TextEditingController();
 
   final storage = const FlutterSecureStorage();
@@ -44,6 +44,7 @@ class _ChangeMedicationWindowState extends State<ChangeMedicationWindow> {
 
   bool _loading = false;
   String? _message;
+  String? _errorMessage;
 
   Future<void> updateMedication() async {
     setState(() {
@@ -72,18 +73,22 @@ class _ChangeMedicationWindowState extends State<ChangeMedicationWindow> {
       );
 
       final data = jsonDecode(response.body);
+      showSnackBar(data["message"], error: response.statusCode >= 400);
 
-      setState(() {
-        _message = data['message'];
-      });
+      if (response.statusCode >= 400) {
+        setState(() {
+          _errorMessage = data["message"];
+        });
+      } else {
+        setState(() {
+          _errorMessage = null;
+        });
+      }
 
       if (response.statusCode == 201) {
         Navigator.pop(context, true);
       }
-    } catch (e, stackTrace) {
-      print('FEHLER: $e');
-      print(stackTrace);
-
+    } catch (e) {
       setState(() {
         _message = e.toString();
       });
@@ -92,6 +97,17 @@ class _ChangeMedicationWindowState extends State<ChangeMedicationWindow> {
         _loading = false;
       });
     }
+  }
+
+  void showSnackBar(String message, {bool error = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: error ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
@@ -197,6 +213,13 @@ class _ChangeMedicationWindowState extends State<ChangeMedicationWindow> {
               ),
 
               SizedBox(height: screenHeight * 0.04),
+
+              if (_errorMessage != null)
+                Text(
+                  _errorMessage!,
+                  style: AppStyles.errorText,
+                  textAlign: TextAlign.center,
+                ),
 
               ElevatedButton(
                 style: AppStyles.button,

@@ -12,41 +12,64 @@ class QRCodeDialog extends StatelessWidget {
   const QRCodeDialog({super.key, required this.emergencyProfile});
 
   Future<void> downloadQRCode(BuildContext context) async {
-    final pdf = pw.Document();
+    try {
+      final pdf = pw.Document();
 
-    pdf.addPage(
-      pw.Page(
-        pageFormat: PdfPageFormat.a4,
-        build: (context) {
-          return pw.Center(
-            child: pw.Column(
-              children: [
-                pw.Text(
-                  "Notfallbereit",
-                  style: pw.TextStyle(
-                    fontSize: 24,
-                    fontWeight: pw.FontWeight.bold,
+      pdf.addPage(
+        pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          build: (context) {
+            return pw.Center(
+              child: pw.Column(
+                children: [
+                  pw.Text(
+                    "Notfallbereit",
+                    style: pw.TextStyle(
+                      fontSize: 24,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
                   ),
-                ),
-                pw.SizedBox(height: 20),
-                pw.BarcodeWidget(
-                  data: emergencyProfile['qr_code_uuid'],
-                  barcode: pw.Barcode.qrCode(),
-                  width: 250,
-                  height: 250,
-                ),
+                  pw.SizedBox(height: 20),
+                  pw.BarcodeWidget(
+                    data: emergencyProfile['qr_code_uuid'],
+                    barcode: pw.Barcode.qrCode(),
+                    width: 250,
+                    height: 250,
+                  ),
 
-                pw.Text(
-                  "${emergencyProfile['first_name']} ${emergencyProfile['last_name']}",
-                ),
-              ],
-            ),
-          );
-        },
+                  pw.Text(
+                    "${emergencyProfile['first_name']} ${emergencyProfile['last_name']}",
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      );
+
+      await Printing.layoutPdf(onLayout: (_) async => pdf.save());
+
+      showSnackBar(context, "QR-Code erfolgreich erstellt.", error: false);
+    } catch (e) {
+      showSnackBar(
+        context,
+        "QR-Code konnte nicht erstellt werden.",
+        error: true,
+      );
+
+      debugPrint(e.toString());
+    }
+  }
+
+  void showSnackBar(BuildContext context, String message, {bool error = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: error ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
       ),
     );
-
-    await Printing.layoutPdf(onLayout: (_) async => pdf.save());
   }
 
   @override

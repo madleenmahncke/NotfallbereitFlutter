@@ -35,10 +35,8 @@ class MedicationDialog extends StatelessWidget {
         }),
       );
 
-      debugPrint(response.statusCode.toString());
-      debugPrint(response.body);
-
       final data = jsonDecode(response.body);
+      showSnackBar(context, data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode == 200) {
         Navigator.pop(context, true);
@@ -48,8 +46,16 @@ class MedicationDialog extends StatelessWidget {
     }
   }
 
-  // TODO
-  Future<void> changeMedicationInformation() async {}
+  void showSnackBar(BuildContext context, String message, {bool error = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: error ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
 
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -95,7 +101,7 @@ class MedicationDialog extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.02),
 
-              Text('${medication['dosage'].toString()}', style: AppStyles.label),
+              Text('${medication['dosage']}', style: AppStyles.label),
 
               SizedBox(height: screenHeight * 0.04),
 
@@ -103,7 +109,7 @@ class MedicationDialog extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.02),
 
-              Text('${medication['notes'].toString()}', style: AppStyles.label),
+              Text('${medication['notes']}', style: AppStyles.label),
 
               SizedBox(height: screenHeight * 0.05),
 
