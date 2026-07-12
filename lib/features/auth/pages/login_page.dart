@@ -20,16 +20,9 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  bool _loading = false;
-  String? _message;
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   Future<void> login() async {
-    setState(() {
-      _loading = true;
-      _message = null;
-    });
-
     try {
       final response = await http.post(
         Uri.parse('${ApiConfig.baseUrl}/api/auth/login'),
@@ -50,6 +43,9 @@ class _LoginPageState extends State<LoginPage> {
         final String token = data['token'];
 
         await storage.write(key: "jwt", value: token);
+
+        // checks if a context page is mounted
+        if (!mounted) return;
 
         if (hasEmergencyProfile) {
           Navigator.pushReplacement(
@@ -73,13 +69,10 @@ class _LoginPageState extends State<LoginPage> {
         debugPrint('Login erfolgreich. UserId: $userId');
       }
     } catch (e) {
-      setState(() {
-        _message = e.toString();
-      });
-    } finally {
-      setState(() {
-        _loading = false;
-      });
+      showSnackBar(
+        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
+        error: true,
+      );
     }
   }
 

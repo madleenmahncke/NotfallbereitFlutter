@@ -20,15 +20,7 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
 
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
-  bool _loading = false;
-  String? _message;
-
   Future<void> login() async {
-    setState(() {
-      _loading = true;
-      _message = null;
-    });
-
     try {
       final token = await storage.read(key: "jwt");
 
@@ -48,6 +40,9 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
       if (response.statusCode == 201) {
         final int emergencyProfileId = data['emergencyProfile']['id'];
 
+        // checks if a context page is mounted
+        if (!mounted) return;
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -63,15 +58,10 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
         debugPrint('Scan erfolgreich. EmergencyProfileId: $emergencyProfileId');
       }
     } catch (e) {
-      setState(() {
-        _message = e.toString();
-      });
-
-      debugPrint("Storage-Fehler: $e");
-    } finally {
-      setState(() {
-        _loading = false;
-      });
+      showSnackBar(
+        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
+        error: true,
+      );
     }
   }
 

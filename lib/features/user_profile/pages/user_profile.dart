@@ -63,6 +63,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
       final data = jsonDecode(response.body);
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
+      // checks if a context page is mounted
+      if (!mounted) return;
+
       if (response.statusCode == 200) {
         Navigator.pushReplacement(
           context,
@@ -301,8 +304,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Widget _buildMobileLayout(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return SizedBox(
       child: Column(
         children: [

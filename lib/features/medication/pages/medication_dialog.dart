@@ -35,6 +35,9 @@ class MedicationDialog extends StatelessWidget {
         }),
       );
 
+      // checks if a context page is mounted
+      if (!context.mounted) return;
+
       final data = jsonDecode(response.body);
       showSnackBar(context, data["message"], error: response.statusCode >= 400);
 
@@ -59,6 +62,7 @@ class MedicationDialog extends StatelessWidget {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
@@ -158,6 +162,9 @@ class MedicationDialog extends StatelessWidget {
                               notes: medication['notes']?.toString() ?? '',
                             ),
                           );
+
+                          // checks if a context page is mounted
+                          if (!context.mounted) return;
 
                           if (result == true) {
                             Navigator.pop(context, true);

@@ -235,9 +235,6 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
   }
 
   Widget _buildMobileLayout(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Column(
       children: [
         _section('Allergien:', allergies, context),
@@ -256,9 +253,6 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
   }
 
   Widget _section(String title, List<dynamic> entries, BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Container(
       height: 250,
 

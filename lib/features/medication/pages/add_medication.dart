@@ -22,15 +22,7 @@ class _AddMedicationWindow extends State<AddMedicationWindow> {
 
   final storage = const FlutterSecureStorage();
 
-  bool _loading = false;
-  String? _message;
-
   Future<void> createMedication() async {
-    setState(() {
-      _loading = true;
-      _message = null;
-    });
-
     try {
       final token = await storage.read(key: "jwt");
 
@@ -53,17 +45,17 @@ class _AddMedicationWindow extends State<AddMedicationWindow> {
 
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
+      // checks if a context page is mounted
+      if (!mounted) return;
+
       if (response.statusCode == 201) {
         Navigator.pop(context, true);
       }
     } catch (e) {
-      setState(() {
-        _message = e.toString();
-      });
-    } finally {
-      setState(() {
-        _loading = false;
-      });
+      showSnackBar(
+        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
+        error: true,
+      );
     }
   }
 

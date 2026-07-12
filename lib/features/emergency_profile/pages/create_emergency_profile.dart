@@ -24,15 +24,7 @@ class _CreateEmergencyProfilePageState
 
   final storage = const FlutterSecureStorage();
 
-  bool _loading = false;
-  String? _message;
-
   Future<void> createEmergencyProfile() async {
-    setState(() {
-      _loading = true;
-      _message = null;
-    });
-
     try {
       final token = await storage.read(key: "jwt");
 
@@ -59,6 +51,9 @@ class _CreateEmergencyProfilePageState
         final userId = data['userId'];
         final int? emergencyProfileId = data['emergencyProfileId'];
 
+        // checks if a context page is mounted
+        if (!mounted) return;
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -72,13 +67,10 @@ class _CreateEmergencyProfilePageState
         debugPrint('Erstellen des Notfallprofils erfolgreich. UserId: $userId');
       }
     } catch (e) {
-      setState(() {
-        _message = e.toString();
-      });
-    } finally {
-      setState(() {
-        _loading = false;
-      });
+      showSnackBar(
+        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
+        error: true,
+      );
     }
   }
 

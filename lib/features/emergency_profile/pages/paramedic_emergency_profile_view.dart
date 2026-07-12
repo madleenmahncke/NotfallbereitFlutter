@@ -1,12 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/emergency_contact/pages/paramedic_emergency_contact_dialog.dart';
 import 'package:notfallbereit/features/medication/pages/paramedic_medication_dialog.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import '../../../core/api/api_config.dart';
 import '../../allergy/pages/paramedic_allergy_dialog.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -174,9 +170,6 @@ class _ParamedicEmergencyProfileViewState
   }
 
   Widget _buildMobileLayout(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Column(
       children: [
         _section('Allergien:', allergies, context),
@@ -195,9 +188,6 @@ class _ParamedicEmergencyProfileViewState
   }
 
   Widget _section(String title, List<dynamic> entries, BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Container(
       height: 250,
 
@@ -241,7 +231,7 @@ class _ParamedicEmergencyProfileViewState
                   if (title == 'Allergien:') {
                     return TextButton(
                       onPressed: () async {
-                        final result = await showDialog(
+                        await showDialog(
                           context: context,
                           barrierDismissible: false,
                           builder: (_) => ParamedicAllergyDialog(allergy: item),
@@ -259,7 +249,7 @@ class _ParamedicEmergencyProfileViewState
                     debugPrint(item.toString());
                     return TextButton(
                       onPressed: () async {
-                        final result = await showDialog(
+                        await showDialog(
                           context: context,
                           barrierDismissible: false,
                           builder: (_) => ParamedicMedicationDialog(medication: item),
@@ -272,7 +262,7 @@ class _ParamedicEmergencyProfileViewState
                   if (title == 'Notfallkontakte:') {
                     return TextButton(
                       onPressed: () async {
-                        final result = await showDialog(
+                        await showDialog(
                           context: context,
                           barrierDismissible: false,
                           builder: (_) =>

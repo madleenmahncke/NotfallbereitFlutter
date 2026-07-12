@@ -21,16 +21,9 @@ class ParamedicVerificationPage extends StatefulWidget {
 class _ParamedicVerificationPageState extends State<ParamedicVerificationPage> {
   final _verificationCodeController = TextEditingController();
 
-  bool _loading = false;
-  String? _message;
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   Future<void> verify() async {
-    setState(() {
-      _loading = true;
-      _message = null;
-    });
-
     try {
       final token = await storage.read(key: "jwt");
 
@@ -53,6 +46,9 @@ class _ParamedicVerificationPageState extends State<ParamedicVerificationPage> {
       if (response.statusCode == 200) {
         final int userId = data['userId'];
 
+        // checks if a context page is mounted
+        if (!mounted) return;
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => ParamedicScanQrCode()),
@@ -61,15 +57,10 @@ class _ParamedicVerificationPageState extends State<ParamedicVerificationPage> {
         debugPrint('Verifizierung erfolgreich. UserId: $userId');
       }
     } catch (e) {
-      setState(() {
-        _message = e.toString();
-      });
-
-      debugPrint("Storage-Fehler: $e");
-    } finally {
-      setState(() {
-        _loading = false;
-      });
+      showSnackBar(
+        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
+        error: true,
+      );
     }
   }
 

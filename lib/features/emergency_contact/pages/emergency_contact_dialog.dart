@@ -35,6 +35,9 @@ class EmergencyContactDialog extends StatelessWidget {
         }),
       );
 
+      // checks if a context page is mounted
+      if (!context.mounted) return;
+
       final data = jsonDecode(response.body);
       showSnackBar(context, data["message"], error: response.statusCode >= 400);
 
@@ -59,6 +62,7 @@ class EmergencyContactDialog extends StatelessWidget {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
@@ -103,10 +107,7 @@ class EmergencyContactDialog extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.02),
 
-              Text(
-                '${emergencyContact['phone'].toString()}',
-                style: AppStyles.label,
-              ),
+              Text('${emergencyContact['phone']}', style: AppStyles.label),
 
               SizedBox(height: screenHeight * 0.04),
 
@@ -115,7 +116,7 @@ class EmergencyContactDialog extends StatelessWidget {
               SizedBox(height: screenHeight * 0.02),
 
               Text(
-                '${emergencyContact['relationship'].toString()}',
+                '${emergencyContact['relationship']}',
                 style: AppStyles.label,
               ),
 
@@ -171,6 +172,9 @@ class EmergencyContactDialog extends StatelessWidget {
                                   '',
                             ),
                           );
+
+                          // checks if a context page is mounted
+                          if (!context.mounted) return;
 
                           if (result == true) {
                             Navigator.pop(context, true);

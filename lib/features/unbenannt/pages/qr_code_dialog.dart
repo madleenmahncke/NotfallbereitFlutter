@@ -49,6 +49,9 @@ class QRCodeDialog extends StatelessWidget {
 
       await Printing.layoutPdf(onLayout: (_) async => pdf.save());
 
+      // checks if a context page is mounted
+      if (!context.mounted) return;
+
       showSnackBar(context, "QR-Code erfolgreich erstellt.", error: false);
     } catch (e) {
       showSnackBar(

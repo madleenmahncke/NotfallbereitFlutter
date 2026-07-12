@@ -22,7 +22,7 @@ class SelectInformationWindow extends StatelessWidget {
 
     const double buttonWidth = 320;
     const double buttonHeight = 80;
-    
+
     bool addInformation = false;
 
     if (title == 'HINZUFÜGEN') {
@@ -45,7 +45,11 @@ class SelectInformationWindow extends StatelessWidget {
                   child: TextButton.icon(
                     onPressed: () => Navigator.pop(context),
                     style: AppStyles.fakeAppBar,
-                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                     label: const Text('Zurück', style: AppStyles.appBarText),
                   ),
                 ),
@@ -75,6 +79,9 @@ class SelectInformationWindow extends StatelessWidget {
                               emergencyProfileId: emergencyProfileId,
                             ),
                           );
+
+                          // checks if a context page is mounted
+                          if (!context.mounted) return;
 
                           if (result == true) {
                             Navigator.pop(context, true);
@@ -106,6 +113,9 @@ class SelectInformationWindow extends StatelessWidget {
                             ),
                           );
 
+                          // checks if a context page is mounted
+                          if (!context.mounted) return;
+
                           if (result == true) {
                             Navigator.pop(context, true);
                           }
@@ -135,6 +145,9 @@ class SelectInformationWindow extends StatelessWidget {
                               emergencyProfileId: emergencyProfileId,
                             ),
                           );
+
+                          // checks if a context page is mounted
+                          if (!context.mounted) return;
 
                           if (result == true) {
                             Navigator.pop(context, true);

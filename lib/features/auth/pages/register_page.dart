@@ -20,18 +20,17 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _repeatedPasswordController = TextEditingController();
 
+  bool hasMinLength = false;
+  bool hasUppercase = false;
+  bool hasLowercase = false;
+  bool hasNumber = false;
+  bool hasSpecial = false;
+
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   bool _consentGiven = false;
-  bool _loading = false;
-  String? _message;
 
   Future<void> register() async {
-    setState(() {
-      _loading = true;
-      _message = null;
-    });
-
     try {
       final response = await http.post(
         Uri.parse('${ApiConfig.baseUrl}/api/auth/register'),
@@ -53,6 +52,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
         await storage.write(key: "jwt", value: token);
 
+        // checks if a context page is mounted
+        if (!mounted) return;
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => CreateEmergencyProfilePage()),
@@ -61,21 +63,12 @@ class _RegisterPageState extends State<RegisterPage> {
         debugPrint('Registrierung erfolgreich. UserId: $userId');
       }
     } catch (e) {
-      setState(() {
-        _message = e.toString();
-      });
-    } finally {
-      setState(() {
-        _loading = false;
-      });
+      showSnackBar(
+        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
+        error: true,
+      );
     }
   }
-
-  bool hasMinLength = false;
-  bool hasUppercase = false;
-  bool hasLowercase = false;
-  bool hasNumber = false;
-  bool hasSpecial = false;
 
   // with help of ChatGPT
   void checkPassword(String password) {
@@ -93,7 +86,9 @@ class _RegisterPageState extends State<RegisterPage> {
       children: [
         Icon(
           fulfilled ? Icons.check_circle : Icons.cancel,
-          color: fulfilled ? const Color(0xFF274E13) : const Color.fromARGB(255, 204, 0, 0),
+          color: fulfilled
+              ? const Color(0xFF274E13)
+              : const Color.fromARGB(255, 204, 0, 0),
           size: 18,
         ),
         const SizedBox(width: 8),
@@ -106,7 +101,9 @@ class _RegisterPageState extends State<RegisterPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: error ? const Color.fromARGB(255, 204, 0, 0) : const Color(0xFF274E13),
+        backgroundColor: error
+            ? const Color.fromARGB(255, 204, 0, 0)
+            : const Color(0xFF274E13),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 3),
       ),
@@ -233,9 +230,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AutoSizeText("Das Passwort muss erfüllen: ", minFontSize: 19),
+                      AutoSizeText(
+                        "Das Passwort muss erfüllen: ",
+                        minFontSize: 19,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
 
-                      SizedBox(height: screenHeight * 0.02),
+                      SizedBox(height: screenHeight * 0.01),
 
                       passwordRequirement(
                         "Mindestens 12 Zeichen",

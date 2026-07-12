@@ -9,6 +9,7 @@ class ParamedicAllergyDialog extends StatelessWidget {
 
   final storage = const FlutterSecureStorage();
 
+  @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
@@ -53,7 +54,7 @@ class ParamedicAllergyDialog extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.02),
 
-              Text('${allergy['notes'].toString()}', style: AppStyles.label),
+              Text('${allergy['notes']}', style: AppStyles.label),
 
               SizedBox(height: screenHeight * 0.05),
             ],

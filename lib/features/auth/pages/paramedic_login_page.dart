@@ -19,16 +19,9 @@ class _ParamedicLoginPageState extends State<ParamedicLoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  bool _loading = false;
-  String? _message;
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   Future<void> login() async {
-    setState(() {
-      _loading = true;
-      _message = null;
-    });
-
     try {
       final response = await http.post(
         Uri.parse('${ApiConfig.baseUrl}/api/auth/login'),
@@ -50,11 +43,13 @@ class _ParamedicLoginPageState extends State<ParamedicLoginPage> {
         await storage.write(key: "jwt", value: token);
 
         if (data["role"] != "PARAMEDIC") {
-          setState(() {
-            _message = "Bitte kontaktieren Sie den Support.";
-          });
+          showSnackBar("Bitte kontaktieren Sie den Support.", error: true);
+
           return;
         } else {
+          // checks if a context page is mounted
+          if (!mounted) return;
+
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -67,15 +62,10 @@ class _ParamedicLoginPageState extends State<ParamedicLoginPage> {
         debugPrint('Login erfolgreich. paramedicId: $paramedicId');
       }
     } catch (e) {
-      setState(() {
-        _message = e.toString();
-      });
-
-      debugPrint("Storage-Fehler: $e");
-    } finally {
-      setState(() {
-        _loading = false;
-      });
+      showSnackBar(
+        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
+        error: true,
+      );
     }
   }
 

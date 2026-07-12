@@ -12,6 +12,7 @@ class ParamedicEmergencyContactDialog extends StatelessWidget {
 
   final storage = const FlutterSecureStorage();
 
+  @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
@@ -57,7 +58,7 @@ class ParamedicEmergencyContactDialog extends StatelessWidget {
               SizedBox(height: screenHeight * 0.02),
 
               Text(
-                '${emergencyContact['phone'].toString()}',
+                '${emergencyContact['phone']}',
                 style: AppStyles.label,
               ),
 
@@ -68,7 +69,7 @@ class ParamedicEmergencyContactDialog extends StatelessWidget {
               SizedBox(height: screenHeight * 0.02),
 
               Text(
-                '${emergencyContact['relationship'].toString()}',
+                '${emergencyContact['relationship']}',
                 style: AppStyles.label,
               ),
 

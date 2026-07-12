@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:notfallbereit/features/alert/pages/custom_alert.dart';
 import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/allergy/pages/change_allergy_information.dart';
-import 'package:notfallbereit/features/auth/pages/index.dart';
 import '../../../core/api/api_config.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -36,6 +35,9 @@ class AllergyDialog extends StatelessWidget {
         }),
       );
 
+      // checks if a context page is mounted
+      if (!context.mounted) return;
+
       final data = jsonDecode(response.body);
       showSnackBar(context, data["message"], error: response.statusCode >= 400);
 
@@ -60,6 +62,7 @@ class AllergyDialog extends StatelessWidget {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
@@ -150,6 +153,9 @@ class AllergyDialog extends StatelessWidget {
                               notes: allergy['notes']?.toString() ?? '',
                             ),
                           );
+
+                          // checks if a context page is mounted
+                          if (!context.mounted) return;
 
                           if (result == true) {
                             Navigator.pop(context, true);
