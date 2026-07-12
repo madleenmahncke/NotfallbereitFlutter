@@ -46,9 +46,8 @@ class _RegisterPageState extends State<RegisterPage> {
       final data = jsonDecode(response.body);
 
       showSnackBar(data["message"], error: response.statusCode >= 400);
-      
+
       if (response.statusCode == 201) {
-        print("BIN IM IF");
         final userId = data['id'];
         final String token = data['token'];
 
@@ -72,11 +71,42 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  bool hasMinLength = false;
+  bool hasUppercase = false;
+  bool hasLowercase = false;
+  bool hasNumber = false;
+  bool hasSpecial = false;
+
+  // with help of ChatGPT
+  void checkPassword(String password) {
+    setState(() {
+      hasMinLength = password.length >= 12;
+      hasUppercase = RegExp(r'[A-Z]').hasMatch(password);
+      hasLowercase = RegExp(r'[a-z]').hasMatch(password);
+      hasNumber = RegExp(r'\d').hasMatch(password);
+      hasSpecial = RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
+    });
+  }
+
+  Widget passwordRequirement(String text, bool fulfilled) {
+    return Row(
+      children: [
+        Icon(
+          fulfilled ? Icons.check_circle : Icons.cancel,
+          color: fulfilled ? const Color(0xFF274E13) : const Color.fromARGB(255, 204, 0, 0),
+          size: 18,
+        ),
+        const SizedBox(width: 8),
+        AutoSizeText(text, minFontSize: 18),
+      ],
+    );
+  }
+
   void showSnackBar(String message, {bool error = true}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: error ? Colors.red : Colors.green,
+        backgroundColor: error ? const Color.fromARGB(255, 204, 0, 0) : const Color(0xFF274E13),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 3),
       ),
@@ -168,6 +198,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   // TextField Password
                   TextField(
                     controller: _passwordController,
+                    onChanged: checkPassword,
                     obscureText: true,
                     style: AppStyles.inputStyle,
                     decoration: AppStyles.textField(
@@ -197,7 +228,40 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  SizedBox(height: screenHeight * 0.08),
+                  SizedBox(height: screenHeight * 0.04),
+
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AutoSizeText("Das Passwort muss erfüllen: ", minFontSize: 19),
+
+                      SizedBox(height: screenHeight * 0.02),
+
+                      passwordRequirement(
+                        "Mindestens 12 Zeichen",
+                        hasMinLength,
+                      ),
+
+                      passwordRequirement(
+                        "Mindestens ein Großbuchstabe",
+                        hasUppercase,
+                      ),
+
+                      passwordRequirement(
+                        "Mindestens ein Kleinbuchstabe",
+                        hasLowercase,
+                      ),
+
+                      passwordRequirement("Mindestens eine Zahl", hasNumber),
+
+                      passwordRequirement(
+                        "Mindestens ein Sonderzeichen",
+                        hasSpecial,
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: screenHeight * 0.06),
 
                   Center(
                     child: ConstrainedBox(

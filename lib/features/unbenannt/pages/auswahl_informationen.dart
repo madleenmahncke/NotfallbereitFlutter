@@ -22,9 +22,7 @@ class SelectInformationWindow extends StatelessWidget {
 
     const double buttonWidth = 320;
     const double buttonHeight = 80;
-
-    // TODO: if Abfrage im Button, ob es hinzufügen oder entfernen ist. Danach dann jeweils das passende weitere Fenster aufrufen
-
+    
     bool addInformation = false;
 
     if (title == 'HINZUFÜGEN') {

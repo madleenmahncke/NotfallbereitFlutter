@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
       final data = jsonDecode(response.body);
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         final bool hasEmergencyProfile = data['hasEmergencyProfile'];
         final int userId = data['userId'];
         final int? emergencyProfileId = data['emergencyProfileId'];
@@ -87,7 +87,9 @@ class _LoginPageState extends State<LoginPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: error ? Colors.red : Colors.green,
+        backgroundColor: error
+            ? const Color.fromARGB(255, 204, 0, 0)
+            : const Color(0xFF274E13),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 3),
       ),

@@ -36,9 +36,6 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
 
   final storage = const FlutterSecureStorage();
 
-  //bool _loading = false;
-  //String? _message;
-
   @override
   void initState() {
     super.initState();
@@ -75,7 +72,9 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: error ? Colors.red : Colors.green,
+        backgroundColor: error
+            ? const Color.fromARGB(255, 204, 0, 0)
+            : const Color(0xFF274E13),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 3),
       ),
@@ -86,6 +85,10 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
+    if (emergencyProfile == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFA8C3A0),

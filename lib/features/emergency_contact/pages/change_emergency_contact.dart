@@ -122,7 +122,9 @@ class _ChangeEmergencyContactWindowState
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: error ? Colors.red : Colors.green,
+        backgroundColor: error
+            ? const Color.fromARGB(255, 204, 0, 0)
+            : const Color(0xFF274E13),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 3),
       ),

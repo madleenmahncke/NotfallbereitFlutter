@@ -38,10 +38,7 @@ class _ParamedicEmergencyProfileViewState
   Map<String, dynamic>? emergencyProfile;
 
   final storage = const FlutterSecureStorage();
-
-  //bool _loading = false;
-  //String? _message;
-
+  
   @override
   void initState() {
     super.initState();
@@ -58,7 +55,6 @@ class _ParamedicEmergencyProfileViewState
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // TODO: Return to Home Page with error message
     if (emergencyProfile == null) {
       return const Center(child: CircularProgressIndicator());
     }

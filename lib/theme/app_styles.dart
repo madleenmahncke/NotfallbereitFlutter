@@ -41,7 +41,7 @@ class AppStyles {
   static const TextStyle errorText = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.bold,
-    color: Colors.red,
+    color: Color.fromARGB(255, 204, 0, 0),
   );
 
   static final ButtonStyle button = ElevatedButton.styleFrom(
