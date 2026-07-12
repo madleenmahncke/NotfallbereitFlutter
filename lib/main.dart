@@ -21,8 +21,8 @@ class NotfallbereitApp extends StatelessWidget {
         fontFamily: 'Agenor',
       ),
 
-      //home: const Index(),
-      home: const ParamedicIndex()
+      home: const Index(),
+      //home: const ParamedicIndex()
     );
   }
 }

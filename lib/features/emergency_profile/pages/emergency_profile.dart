@@ -11,6 +11,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
 import '../../allergy/pages/allergy_dialog.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../user_profile/pages/user_profile.dart';
 
 class EmergencyProfilePage extends StatefulWidget {
   final int userId;
@@ -51,11 +52,9 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
 
       final response = await http.get(
         Uri.parse(
-          '${ApiConfig.baseUrl}/api/emergencyProfile/${widget.userId}/${widget.emergencyProfileId}'
+          '${ApiConfig.baseUrl}/api/emergencyProfile/${widget.userId}/${widget.emergencyProfileId}',
         ),
-          headers: {
-            "Authorization": "Bearer $token",
-          }
+        headers: {"Authorization": "Bearer $token"},
       );
 
       final data = jsonDecode(response.body);
@@ -108,7 +107,11 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                   ),
                 ),
                 onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                  size: 24,
+                ),
                 label: const Text('Zurück', style: AppStyles.appBarText),
               ),
             ),
@@ -124,9 +127,16 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                   ),
                 ),
                 onPressed: () {
-                  // Profil öffnen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const UserProfilePage()),
+                  );
                 },
-                icon: const Icon(Icons.person_outline, color: Colors.black87, size: 24),
+                icon: const Icon(
+                  Icons.person_outline,
+                  color: Colors.black87,
+                  size: 24,
+                ),
                 label: const Text('Profil', style: AppStyles.label),
               ),
             ),
