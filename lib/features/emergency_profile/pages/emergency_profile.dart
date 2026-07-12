@@ -59,9 +59,6 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
 
       final data = jsonDecode(response.body);
 
-      debugPrint(data.toString());
-      debugPrint(data['emergencyProfile'].toString());
-
       setState(() {
         emergencyProfile = data['emergencyProfile'];
         allergies = data['allergies'] ?? [];
@@ -129,7 +126,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const UserProfilePage()),
+                    MaterialPageRoute(builder: (_) => UserProfilePage(emergencyProfile: emergencyProfile,)),
                   );
                 },
                 icon: const Icon(

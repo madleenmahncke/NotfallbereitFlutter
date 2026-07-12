@@ -6,6 +6,7 @@ import 'package:notfallbereit/features/emergency_profile/pages/create_emergency_
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,6 +19,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _repeatedPasswordController = TextEditingController();
+
+  final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   bool _consentGiven = false;
   bool _loading = false;
@@ -42,25 +45,22 @@ class _RegisterPageState extends State<RegisterPage> {
 
       final data = jsonDecode(response.body);
 
-      setState(() {
-        _message = data['message'];
-      });
-
+      showSnackBar(data["message"], error: response.statusCode >= 400);
+      print("BIN VOR IF");
+      print(response.statusCode);
       if (response.statusCode == 200) {
+        print("BIN IM IF");
         final userId = data['id'];
+        final String token = data['token'];
+
+        await storage.write(key: "jwt", value: token);
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (_) => CreateEmergencyProfilePage(userId: userId),
-          ),
+          MaterialPageRoute(builder: (_) => CreateEmergencyProfilePage()),
         );
 
         debugPrint('Registrierung erfolgreich. UserId: $userId');
-
-        // TODO:
-        // JWT speichern
-        // Zur HomePage navigieren
       }
     } catch (e, stackTrace) {
       print('FEHLER: $e');
@@ -74,6 +74,17 @@ class _RegisterPageState extends State<RegisterPage> {
         _loading = false;
       });
     }
+  }
+
+  void showSnackBar(String message, {bool error = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: error ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override

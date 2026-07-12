@@ -95,7 +95,7 @@ class AllergyDialog extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.02),
 
-              Text('${allergy['notes'].toString()}', style: AppStyles.label),
+              Text('${allergy['notes']}', style: AppStyles.label),
 
               SizedBox(height: screenHeight * 0.05),
 

@@ -9,9 +9,7 @@ import '../../../core/api/api_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class CreateEmergencyProfilePage extends StatefulWidget {
-  final int userId;
-
-  const CreateEmergencyProfilePage({super.key, required this.userId});
+  const CreateEmergencyProfilePage({super.key});
 
   @override
   State<CreateEmergencyProfilePage> createState() =>
@@ -40,7 +38,7 @@ class _CreateEmergencyProfilePageState
       final token = await storage.read(key: "jwt");
 
       final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/api/emergencyProfile/${widget.userId}'),
+        Uri.parse('${ApiConfig.baseUrl}/api/emergencyProfile/createEmergencyProfile'),
         headers: {
           "Authorization": "Bearer $token",
           'Content-Type': 'application/json',
@@ -77,10 +75,6 @@ class _CreateEmergencyProfilePageState
         );
 
         debugPrint('Erstellen des Notfallprofils erfolgreich. UserId: $userId');
-
-        // TODO:
-        // JWT speichern
-        // Zur HomePage navigieren
       }
     } catch (e) {
       setState(() {

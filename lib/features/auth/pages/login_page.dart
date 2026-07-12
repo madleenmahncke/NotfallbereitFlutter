@@ -40,10 +40,6 @@ class _LoginPageState extends State<LoginPage> {
         }),
       );
 
-      // TODO: richtige Fehlermeldung einbauen mit Alerts
-      debugPrint('Status: ${response.statusCode}');
-      debugPrint(response.body);
-
       final data = jsonDecode(response.body);
 
       setState(() {
@@ -72,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (_) => CreateEmergencyProfilePage(userId: userId),
+              builder: (_) => CreateEmergencyProfilePage(),
             ),
           );
         }
