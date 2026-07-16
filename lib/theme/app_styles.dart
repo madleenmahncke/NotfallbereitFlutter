@@ -81,6 +81,20 @@ class AppStyles {
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
   );
 
+  static final ButtonStyle footerButton = OutlinedButton.styleFrom(
+    backgroundColor: const Color(0xFFE8E8E8),
+    foregroundColor: Color(0xFF20124D),
+    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+    side: const BorderSide(color: Colors.grey),
+  );
+
+  static final ButtonStyle footerVideoButton = ElevatedButton.styleFrom(
+    backgroundColor: const Color(0xFFF4B266),
+    foregroundColor: Color(0xFF20124D),
+    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+    side: const BorderSide(color: Colors.grey),
+  );
+
   static const TextStyle buttonText = TextStyle(
     fontSize: 30,
     color: Colors.white,

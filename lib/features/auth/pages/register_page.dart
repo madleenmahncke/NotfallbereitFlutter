@@ -302,6 +302,72 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ),
       ),
+
+      // TODO nochmal anschauen !!!
+      bottomNavigationBar: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = MediaQuery.of(context).size.width >= 1200;
+
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: isDesktop
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        OutlinedButton(
+                          style: AppStyles.footerButton,
+                          onPressed: () {},
+                          child: const Text("Impressum"),
+                        ),
+
+                        const SizedBox(width: 30),
+
+                        ElevatedButton(
+                          style: AppStyles.footerVideoButton,
+                          onPressed: () {},
+                          child: const Text("Video zur App"),
+                        ),
+
+                        const SizedBox(width: 30),
+
+                        OutlinedButton(
+                          style: AppStyles.footerButton,
+                          onPressed: () {},
+                          child: const Text("Datenschutzerklärung"),
+                        ),
+                      ],
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        OutlinedButton(
+                          style: AppStyles.footerButton,
+                          onPressed: () {},
+                          child: const Text("Impressum"),
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        ElevatedButton(
+                          style: AppStyles.footerVideoButton,
+                          onPressed: () {},
+                          child: const Text("Video zur App"),
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        OutlinedButton(
+                          style: AppStyles.footerButton,
+                          onPressed: () {},
+                          child: const Text("Datenschutzerklärung"),
+                        ),
+                      ],
+                    ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

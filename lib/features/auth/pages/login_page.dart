@@ -190,6 +190,34 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+      
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              OutlinedButton(
+                style: AppStyles.footerButton,
+                onPressed: () {},
+                child: const Text("Impressum"),
+              ),
+
+              ElevatedButton(
+                style: AppStyles.footerVideoButton,
+                onPressed: () {},
+                child: const Text("Video zur App"),
+              ),
+
+              OutlinedButton(
+                style: AppStyles.footerButton,
+                onPressed: () {},
+                child: const Text("Datenschutzerklärung"),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
