@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
 
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
+  // sends the login request
   Future<void> login() async {
     try {
       final response = await http.post(
@@ -34,7 +35,6 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       final data = jsonDecode(response.body);
-      showSnackBar(data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode == 200) {
         final bool hasEmergencyProfile = data['hasEmergencyProfile'];
@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
 
         await storage.write(key: "jwt", value: token);
 
-        // checks if a context page is mounted
+        // ensure widget is still in the widget tree
         if (!mounted) return;
 
         if (hasEmergencyProfile) {
@@ -64,9 +64,8 @@ class _LoginPageState extends State<LoginPage> {
           );
         }
 
+        // shows a success or error message
         showSnackBar(data["message"], error: response.statusCode >= 400);
-
-        debugPrint('Login erfolgreich. UserId: $userId');
       }
     } catch (e) {
       showSnackBar(
@@ -131,7 +130,6 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   SizedBox(height: screenHeight * 0.1),
 
-                  // Title Login
                   AutoSizeText(
                     'ANMELDUNG',
                     style: AppStyles.title,
@@ -141,7 +139,6 @@ class _LoginPageState extends State<LoginPage> {
 
                   SizedBox(height: screenHeight * 0.1),
 
-                  // Label E-Mail
                   AutoSizeText(
                     'E-Mail:',
                     style: AppStyles.label,
@@ -151,7 +148,6 @@ class _LoginPageState extends State<LoginPage> {
 
                   SizedBox(height: screenHeight * 0.02),
 
-                  // TextField E-Mail
                   TextField(
                     controller: _emailController,
                     maxLength: 255,
@@ -161,7 +157,6 @@ class _LoginPageState extends State<LoginPage> {
 
                   SizedBox(height: screenHeight * 0.07),
 
-                  // Label Password
                   AutoSizeText(
                     'Passwort:',
                     style: AppStyles.label,
@@ -171,7 +166,6 @@ class _LoginPageState extends State<LoginPage> {
 
                   SizedBox(height: screenHeight * 0.02),
 
-                  // TextField Password
                   TextField(
                     controller: _passwordController,
                     obscureText: true,

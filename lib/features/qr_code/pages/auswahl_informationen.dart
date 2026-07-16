@@ -80,7 +80,7 @@ class SelectInformationWindow extends StatelessWidget {
                             ),
                           );
 
-                          // checks if a context page is mounted
+                          // ensure widget is still in the widget tree
                           if (!context.mounted) return;
 
                           if (result == true) {

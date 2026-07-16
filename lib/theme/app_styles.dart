@@ -38,6 +38,12 @@ class AppStyles {
     color: Color(0xFF20124D),
   );
 
+  static const TextStyle mobileTitle = TextStyle(
+    fontSize: 30,
+    fontWeight: FontWeight.bold,
+    color: Color(0xFF20124D),
+  );
+
   static const TextStyle errorText = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.bold,

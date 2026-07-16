@@ -35,6 +35,7 @@ class _ParamedicEmergencyProfileViewState
 
   final storage = const FlutterSecureStorage();
   
+  // initialize emergency profile data
   @override
   void initState() {
     super.initState();
@@ -102,7 +103,6 @@ class _ParamedicEmergencyProfileViewState
                 children: [
                   SizedBox(height: screenHeight * 0.06),
 
-                  // Title Create Emergency Profile
                   AutoSizeText(
                     'NOTFALLMAPPE',
                     style: AppStyles.title,
@@ -245,8 +245,6 @@ class _ParamedicEmergencyProfileViewState
                   }
 
                   if (title == 'Medikamente:') {
-                    debugPrint("Titel: $title");
-                    debugPrint(item.toString());
                     return TextButton(
                       onPressed: () async {
                         await showDialog(

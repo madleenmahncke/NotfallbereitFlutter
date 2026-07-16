@@ -22,6 +22,7 @@ class _AddMedicationWindow extends State<AddMedicationWindow> {
 
   final storage = const FlutterSecureStorage();
 
+  // sends the medication to the backend
   Future<void> createMedication() async {
     try {
       final token = await storage.read(key: "jwt");
@@ -43,9 +44,10 @@ class _AddMedicationWindow extends State<AddMedicationWindow> {
 
       final data = jsonDecode(response.body);
 
+      // shows a success or error message
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
-      // checks if a context page is mounted
+      // ensure widget is still in the widget tree
       if (!mounted) return;
 
       if (response.statusCode == 201) {

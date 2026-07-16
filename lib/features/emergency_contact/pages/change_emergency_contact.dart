@@ -38,6 +38,7 @@ class _ChangeEmergencyContactWindowState
 
   final storage = const FlutterSecureStorage();
 
+  // initialize text fields
   @override
   void initState() {
     super.initState();
@@ -58,6 +59,7 @@ class _ChangeEmergencyContactWindowState
 
   String? _errorMessage;
 
+  // sends the update request
   Future<void> updateEmergencyContact() async {
     try {
       final token = await storage.read(key: "jwt");
@@ -81,6 +83,8 @@ class _ChangeEmergencyContactWindowState
       );
 
       final data = jsonDecode(response.body);
+
+      // shows a success or error message
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode >= 400) {
@@ -93,7 +97,7 @@ class _ChangeEmergencyContactWindowState
         });
       }
 
-      // checks if a context page is mounted
+      // ensure widget is still in the widget tree
       if (!mounted) return;
 
       if (response.statusCode == 201) {

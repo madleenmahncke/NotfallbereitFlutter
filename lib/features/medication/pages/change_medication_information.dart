@@ -33,6 +33,7 @@ class _ChangeMedicationWindowState extends State<ChangeMedicationWindow> {
 
   final storage = const FlutterSecureStorage();
 
+  // initialize text fields
   @override
   void initState() {
     super.initState();
@@ -44,6 +45,7 @@ class _ChangeMedicationWindowState extends State<ChangeMedicationWindow> {
 
   String? _errorMessage;
 
+  // sends the update request
   Future<void> updateMedication() async {
     try {
       final token = await storage.read(key: "jwt");
@@ -66,6 +68,8 @@ class _ChangeMedicationWindowState extends State<ChangeMedicationWindow> {
       );
 
       final data = jsonDecode(response.body);
+
+      // shows a success or error message
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode >= 400) {
@@ -78,14 +82,17 @@ class _ChangeMedicationWindowState extends State<ChangeMedicationWindow> {
         });
       }
 
-      // checks if a context page is mounted
+      // ensure widget is still in the widget tree
       if (!mounted) return;
 
       if (response.statusCode == 201) {
         Navigator.pop(context, true);
       }
     } catch (e) {
-      showSnackBar("Es ist ein unerwarteter Fehler aufgetreten. + $e", error: true);
+      showSnackBar(
+        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
+        error: true,
+      );
     }
   }
 

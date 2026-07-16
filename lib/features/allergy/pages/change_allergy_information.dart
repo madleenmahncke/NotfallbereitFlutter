@@ -30,17 +30,17 @@ class _ChangeAllergyWindowState extends State<ChangeAllergyWindow> {
 
   final storage = const FlutterSecureStorage();
 
+  // initialize text fields
   @override
   void initState() {
     super.initState();
-
     _allergyNameController = TextEditingController(text: widget.allergen);
-
     _allergyNotesController = TextEditingController(text: widget.notes);
   }
 
   String? _errorMessage;
 
+  // sends the update request
   Future<void> updateAllergy() async {
     try {
       final token = await storage.read(key: "jwt");
@@ -62,6 +62,8 @@ class _ChangeAllergyWindowState extends State<ChangeAllergyWindow> {
       );
 
       final data = jsonDecode(response.body);
+
+      // shows a success or error message
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode >= 400) {
@@ -74,7 +76,7 @@ class _ChangeAllergyWindowState extends State<ChangeAllergyWindow> {
         });
       }
 
-      // checks if a context page is mounted
+      // ensure widget is still in the widget tree
       if (!mounted) return;
 
       if (response.statusCode == 201) {

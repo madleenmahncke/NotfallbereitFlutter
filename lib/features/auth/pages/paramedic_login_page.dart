@@ -34,6 +34,7 @@ class _ParamedicLoginPageState extends State<ParamedicLoginPage> {
 
       final data = jsonDecode(response.body);
 
+      // shows a success or error message
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode == 201) {
@@ -47,7 +48,7 @@ class _ParamedicLoginPageState extends State<ParamedicLoginPage> {
 
           return;
         } else {
-          // checks if a context page is mounted
+          // ensure widget is still in the widget tree
           if (!mounted) return;
 
           Navigator.pushReplacement(
@@ -58,8 +59,6 @@ class _ParamedicLoginPageState extends State<ParamedicLoginPage> {
             ),
           );
         }
-
-        debugPrint('Login erfolgreich. paramedicId: $paramedicId');
       }
     } catch (e) {
       showSnackBar(
@@ -124,7 +123,6 @@ class _ParamedicLoginPageState extends State<ParamedicLoginPage> {
                 children: [
                   SizedBox(height: screenHeight * 0.1),
 
-                  // Title Login
                   AutoSizeText(
                     'ANMELDUNG',
                     style: AppStyles.title,

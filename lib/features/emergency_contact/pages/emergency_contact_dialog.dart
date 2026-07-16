@@ -6,6 +6,7 @@ import 'package:notfallbereit/features/emergency_contact/pages/change_emergency_
 import '../../../core/api/api_config.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class EmergencyContactDialog extends StatelessWidget {
   final Map<String, dynamic> emergencyContact;
@@ -14,6 +15,7 @@ class EmergencyContactDialog extends StatelessWidget {
 
   final storage = const FlutterSecureStorage();
 
+  // sends the delete request
   Future<void> deleteEmergencyContact(BuildContext context) async {
     final emergencyContactId = emergencyContact['id'];
     final emergencyProfileId = emergencyContact['profile_id'];
@@ -35,17 +37,23 @@ class EmergencyContactDialog extends StatelessWidget {
         }),
       );
 
-      // checks if a context page is mounted
+      // ensure widget is still in the widget tree
       if (!context.mounted) return;
 
       final data = jsonDecode(response.body);
+
+      // shows a success or error message
       showSnackBar(context, data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode == 200) {
         Navigator.pop(context, true);
       }
     } catch (e) {
-      debugPrint(e.toString());
+      showSnackBar(
+        context,
+        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
+        error: true,
+      );
     }
   }
 
@@ -95,11 +103,25 @@ class EmergencyContactDialog extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.05),
 
-              Text(
-                'Notfallkontakt: ${emergencyContact['first_name'].toString().toUpperCase()} ${emergencyContact['last_name'].toString().toUpperCase()}',
-                style: AppStyles.title,
-                textAlign: TextAlign.center,
-              ),
+              screenWidth > 1100
+                  ? AutoSizeText(
+                      'Notfallkontakt: ${emergencyContact['first_name'].toString().toUpperCase()} ${emergencyContact['last_name'].toString().toUpperCase()}',
+                      style: AppStyles.title,
+                      textAlign: TextAlign.center,
+                      minFontSize: 30,
+                      maxLines: 2,
+                      stepGranularity: 1,
+                      wrapWords: true,
+                    )
+                  : AutoSizeText(
+                      'Notfallkontakt: ${emergencyContact['first_name'].toString().toUpperCase()} ${emergencyContact['last_name'].toString().toUpperCase()}',
+                      style: AppStyles.mobileTitle,
+                      textAlign: TextAlign.center,
+                      minFontSize: 28,
+                      maxLines: 2,
+                      stepGranularity: 1,
+                      wrapWords: true,
+                    ),
 
               SizedBox(height: screenHeight * 0.05),
 
@@ -122,78 +144,81 @@ class EmergencyContactDialog extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.05),
 
-              // Implementation of Löschen and Informationen bearbeiten by !ChatGPT!
-              SizedBox(
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: ElevatedButton(
-                        style: AppStyles.removeButton,
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (_) => CustomAlert(
-                              title: 'WARNUNG',
-                              message:
-                                  'Willst du diesen Notfallkontakt wirklich löschen?',
-                              onConfirm: () => deleteEmergencyContact(context),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          'Löschen',
-                          style: AppStyles.buttonText,
+              screenWidth > 1100
+                  ? Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: buildDeleteButton(context),
                         ),
-                      ),
-                    ),
-
-                    Align(
-                      alignment: Alignment.center,
-                      child: ElevatedButton(
-                        style: AppStyles.whiteButton,
-                        onPressed: () async {
-                          final result = await showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (_) => ChangeEmergencyContactWindow(
-                              emergencyProfileId:
-                                  emergencyContact['profile_id'],
-                              emergencyContactId: emergencyContact['id'],
-                              firstName: emergencyContact['first_name']
-                                  .toString(),
-                              lastName: emergencyContact['last_name']
-                                  .toString(),
-                              phoneNumber: emergencyContact['phone'].toString(),
-                              relationship:
-                                  emergencyContact['relationship']
-                                      ?.toString() ??
-                                  '',
-                            ),
-                          );
-
-                          // checks if a context page is mounted
-                          if (!context.mounted) return;
-
-                          if (result == true) {
-                            Navigator.pop(context, true);
-                          }
-                        },
-                        child: const Text(
-                          'Informationen bearbeiten',
-                          style: AppStyles.buttonTextBlack,
+                        Align(
+                          alignment: Alignment.center,
+                          child: buildEditButton(context),
                         ),
-                      ),
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        buildEditButton(context),
+                        const SizedBox(height: 12),
+                        buildDeleteButton(context),
+                      ],
                     ),
-                  ],
-                ),
-              ),
 
               SizedBox(height: screenHeight * 0.02),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget buildDeleteButton(BuildContext context) {
+    return ElevatedButton(
+      style: AppStyles.removeButton,
+      onPressed: () {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => CustomAlert(
+            title: 'WARNUNG',
+            message: 'Willst du diesen Notfallkontakt wirklich löschen?',
+            onConfirm: () => deleteEmergencyContact(context),
+          ),
+        );
+      },
+      child: const Text('Löschen', style: AppStyles.buttonText),
+    );
+  }
+
+  Widget buildEditButton(BuildContext context) {
+    return ElevatedButton(
+      style: AppStyles.whiteButton,
+      onPressed: () async {
+        final result = await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => ChangeEmergencyContactWindow(
+            emergencyProfileId: emergencyContact['profile_id'],
+            emergencyContactId: emergencyContact['id'],
+            firstName: emergencyContact['first_name'].toString(),
+            lastName: emergencyContact['last_name'].toString(),
+            phoneNumber: emergencyContact['phone'].toString(),
+            relationship: emergencyContact['relationship']?.toString() ?? '',
+          ),
+        );
+
+        // checks if a context page is mounted
+        if (!context.mounted) return;
+
+        if (result == true) {
+          Navigator.pop(context, true);
+        }
+      },
+      child: const Text(
+        'Informationen bearbeiten',
+        style: AppStyles.buttonTextBlack,
       ),
     );
   }

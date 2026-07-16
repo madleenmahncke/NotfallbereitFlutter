@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/emergency_contact/pages/emergency_contact_dialog.dart';
 import 'package:notfallbereit/features/medication/pages/medication_dialog.dart';
-import 'package:notfallbereit/features/unbenannt/pages/auswahl_informationen.dart';
-import 'package:notfallbereit/features/unbenannt/pages/qr_code_dialog.dart';
+import 'package:notfallbereit/features/qr_code/pages/auswahl_informationen.dart';
+import 'package:notfallbereit/features/qr_code/pages/qr_code_dialog.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
@@ -36,6 +36,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
 
   final storage = const FlutterSecureStorage();
 
+  // initialize emergency profile data
   @override
   void initState() {
     super.initState();
@@ -43,6 +44,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
     loadEmergencyProfile();
   }
 
+  // loads the emergency profile
   Future<void> loadEmergencyProfile() async {
     try {
       final token = await storage.read(key: "jwt");
@@ -55,6 +57,8 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
       );
 
       final data = jsonDecode(response.body);
+
+      // shows a success or error message
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
       setState(() {
@@ -64,7 +68,10 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
         emergencyContacts = data['emergencyContacts'] ?? [];
       });
     } catch (e) {
-      debugPrint(e.toString());
+      showSnackBar(
+        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
+        error: true,
+      );
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 
+// displays a confirmation dialog
 class CustomAlert extends StatelessWidget {
   final String title;
   final String message;

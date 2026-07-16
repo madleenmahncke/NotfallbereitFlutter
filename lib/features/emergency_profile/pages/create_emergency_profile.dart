@@ -15,6 +15,7 @@ class CreateEmergencyProfilePage extends StatefulWidget {
       _CreateEmergencyProfilePageState();
 }
 
+// sends the emergency profile to the backend
 class _CreateEmergencyProfilePageState
     extends State<CreateEmergencyProfilePage> {
   final _firstNameController = TextEditingController();
@@ -45,13 +46,15 @@ class _CreateEmergencyProfilePageState
       );
 
       final data = jsonDecode(response.body);
+
+      // shows a success or error message
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode == 201) {
         final userId = data['userId'];
         final int? emergencyProfileId = data['emergencyProfileId'];
 
-        // checks if a context page is mounted
+        // ensure widget is still in the widget tree
         if (!mounted) return;
 
         Navigator.pushReplacement(
@@ -63,8 +66,6 @@ class _CreateEmergencyProfilePageState
             ),
           ),
         );
-
-        debugPrint('Erstellen des Notfallprofils erfolgreich. UserId: $userId');
       }
     } catch (e) {
       showSnackBar(
@@ -129,7 +130,6 @@ class _CreateEmergencyProfilePageState
                 children: [
                   SizedBox(height: screenHeight * 0.1),
 
-                  // Title Create Emergency Profile
                   AutoSizeText(
                     'PERSONENDATEN',
                     style: AppStyles.title,
@@ -139,7 +139,6 @@ class _CreateEmergencyProfilePageState
 
                   SizedBox(height: screenHeight * 0.1),
 
-                  // Label first name
                   AutoSizeText(
                     'Vorname:',
                     style: AppStyles.label,
@@ -149,7 +148,6 @@ class _CreateEmergencyProfilePageState
 
                   SizedBox(height: screenHeight * 0.02),
 
-                  // TextField first name
                   TextField(
                     controller: _firstNameController,
                     style: AppStyles.inputStyle,
@@ -160,7 +158,6 @@ class _CreateEmergencyProfilePageState
 
                   SizedBox(height: screenHeight * 0.07),
 
-                  // Label last name
                   AutoSizeText(
                     'Nachname:',
                     style: AppStyles.label,
@@ -170,7 +167,6 @@ class _CreateEmergencyProfilePageState
 
                   SizedBox(height: screenHeight * 0.02),
 
-                  // TextField last name
                   TextField(
                     controller: _lastNameController,
                     style: AppStyles.inputStyle,
@@ -181,7 +177,6 @@ class _CreateEmergencyProfilePageState
 
                   SizedBox(height: screenHeight * 0.07),
 
-                  // Label adress
                   AutoSizeText(
                     'Adresse und Hausnummer:',
                     style: AppStyles.label,
@@ -191,7 +186,6 @@ class _CreateEmergencyProfilePageState
 
                   SizedBox(height: screenHeight * 0.02),
 
-                  // TextField adress
                   TextField(
                     controller: _adressController,
                     style: AppStyles.inputStyle,
@@ -202,7 +196,6 @@ class _CreateEmergencyProfilePageState
 
                   SizedBox(height: screenHeight * 0.07),
 
-                  // Label zip code and city
                   AutoSizeText(
                     'Postleitzahl und Ort:',
                     style: AppStyles.label,
@@ -212,7 +205,6 @@ class _CreateEmergencyProfilePageState
 
                   SizedBox(height: screenHeight * 0.02),
 
-                  // TextField zip code and city
                   TextField(
                     controller: _locationController,
                     style: AppStyles.inputStyle,

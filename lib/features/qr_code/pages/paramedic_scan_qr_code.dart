@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:notfallbereit/theme/app_styles.dart';
@@ -20,7 +19,8 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
 
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
-  Future<void> login() async {
+  // sends the qr code request
+  Future<void> requestEmergencyProfile() async {
     try {
       final token = await storage.read(key: "jwt");
 
@@ -35,12 +35,12 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
       );
 
       final data = jsonDecode(response.body);
+
+      // shows a success or error message
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode == 201) {
-        final int emergencyProfileId = data['emergencyProfile']['id'];
-
-        // checks if a context page is mounted
+        // ensure widget is still in the widget tree
         if (!mounted) return;
 
         Navigator.pushReplacement(
@@ -54,8 +54,6 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
             ),
           ),
         );
-
-        debugPrint('Scan erfolgreich. EmergencyProfileId: $emergencyProfileId');
       }
     } catch (e) {
       showSnackBar(
@@ -120,7 +118,6 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
                 children: [
                   SizedBox(height: screenHeight * 0.1),
 
-                  // Title Login
                   AutoSizeText(
                     'QR-CODE SCANNEN',
                     style: AppStyles.title,
@@ -151,7 +148,7 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
                   ),
 
                   ElevatedButton(
-                    onPressed: () => login(),
+                    onPressed: () => requestEmergencyProfile(),
                     style: AppStyles.button,
                     child: Text(
                       'Scannen simulieren',

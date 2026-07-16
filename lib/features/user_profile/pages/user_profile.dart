@@ -30,6 +30,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     loadUserData();
   }
 
+  // loads the user data
   Future<void> loadUserData() async {
     try {
       final token = await storage.read(key: "jwt");
@@ -47,10 +48,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
         userId = data['userId'];
       });
     } catch (e) {
-      debugPrint(e.toString());
+      showSnackBar(
+        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
+        error: true,
+      );
     }
   }
 
+  // sends the delete request
   Future<void> deleteUserProfile() async {
     try {
       final token = await storage.read(key: "jwt");
@@ -61,9 +66,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
       );
 
       final data = jsonDecode(response.body);
+
+      // shows a success or error message
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
-      // checks if a context page is mounted
+      // ensure widget is still in the widget tree
       if (!mounted) return;
 
       if (response.statusCode == 200) {
@@ -71,11 +78,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
           context,
           MaterialPageRoute(builder: (_) => Index()),
         );
-
-        debugPrint('Benutzer erfolgreich gelöscht. UserId: $userId');
       }
     } catch (e) {
-      debugPrint(e.toString());
+      showSnackBar(
+        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
+        error: true,
+      );
     }
   }
 
@@ -207,9 +215,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
           children: const [
             Icon(Icons.folder_shared_outlined, size: 32),
             SizedBox(width: 10),
-            Text(
-              "Daten zur Notfallmappe:",
-              style: AppStyles.tableTitleUnderlined,
+            Expanded(
+              child: AutoSizeText(
+                "Daten zur Notfallmappe:",
+                style: AppStyles.tableTitleUnderlined,
+                maxLines: 2,
+              ),
             ),
           ],
         ),
@@ -235,7 +246,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
         Center(
           child: SizedBox(
-            width: desktop ? screenWidth * 0.3 : screenWidth * 0.6,
+            width: desktop ? screenWidth * 0.3 : screenWidth * 0.8,
             child: ElevatedButton(
               style: AppStyles.button,
               onPressed: () {},
@@ -268,7 +279,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
           children: const [
             Icon(Icons.person_outline, size: 32),
             SizedBox(width: 10),
-            Text("Daten zur Anmeldung:", style: AppStyles.tableTitleUnderlined),
+            Expanded(
+              child: AutoSizeText(
+                "Daten zur Anmeldung:",
+                style: AppStyles.tableTitleUnderlined,
+                maxLines: 2,
+              ),
+            ),
           ],
         ),
 
@@ -283,13 +300,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
         Center(
           child: SizedBox(
-            width: desktop ? screenWidth * 0.3 : screenWidth * 0.6,
+            width: desktop ? screenWidth * 0.3 : screenWidth * 0.8,
             child: ElevatedButton(
               style: AppStyles.button,
               onPressed: () {},
               child: const AutoSizeText(
                 minFontSize: 26,
-                maxLines: 2,
+                maxLines: 3,
                 "ANMELDUNG bearbeiten",
                 textAlign: TextAlign.center,
                 style: AppStyles.buttonText,

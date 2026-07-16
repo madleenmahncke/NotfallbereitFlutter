@@ -11,6 +11,7 @@ class QRCodeDialog extends StatelessWidget {
 
   const QRCodeDialog({super.key, required this.emergencyProfile});
 
+// creates and downloads the qr code pdf
   Future<void> downloadQRCode(BuildContext context) async {
     try {
       final pdf = pw.Document();
@@ -49,8 +50,10 @@ class QRCodeDialog extends StatelessWidget {
 
       await Printing.layoutPdf(onLayout: (_) async => pdf.save());
 
-      // checks if a context page is mounted
+      // ensure widget is still in the widget tree
       if (!context.mounted) return;
+
+      // shows a success or error message
 
       showSnackBar(context, "QR-Code erfolgreich erstellt.", error: false);
     } catch (e) {
@@ -59,8 +62,6 @@ class QRCodeDialog extends StatelessWidget {
         "QR-Code konnte nicht erstellt werden.",
         error: true,
       );
-
-      debugPrint(e.toString());
     }
   }
 

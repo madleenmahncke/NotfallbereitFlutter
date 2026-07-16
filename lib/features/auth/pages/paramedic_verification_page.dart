@@ -6,7 +6,7 @@ import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../../unbenannt/pages/paramedic_scan_qr_code.dart';
+import '../../qr_code/pages/paramedic_scan_qr_code.dart';
 
 class ParamedicVerificationPage extends StatefulWidget {
   final int paramedicId;
@@ -23,6 +23,7 @@ class _ParamedicVerificationPageState extends State<ParamedicVerificationPage> {
 
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
+  // sends the verification request
   Future<void> verify() async {
     try {
       final token = await storage.read(key: "jwt");
@@ -41,20 +42,17 @@ class _ParamedicVerificationPageState extends State<ParamedicVerificationPage> {
 
       final data = jsonDecode(response.body);
 
+      // shows a success or error message
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode == 200) {
-        final int userId = data['userId'];
-
-        // checks if a context page is mounted
+        // ensure widget is still in the widget tree
         if (!mounted) return;
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => ParamedicScanQrCode()),
         );
-
-        debugPrint('Verifizierung erfolgreich. UserId: $userId');
       }
     } catch (e) {
       showSnackBar(

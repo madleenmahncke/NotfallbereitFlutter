@@ -30,6 +30,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   bool _consentGiven = false;
 
+  // sends the registration request
   Future<void> register() async {
     try {
       final response = await http.post(
@@ -44,23 +45,21 @@ class _RegisterPageState extends State<RegisterPage> {
 
       final data = jsonDecode(response.body);
 
+      // shows a success or error message
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
       if (response.statusCode == 201) {
-        final userId = data['id'];
         final String token = data['token'];
 
         await storage.write(key: "jwt", value: token);
 
-        // checks if a context page is mounted
+        // ensure widget is still in the widget tree
         if (!mounted) return;
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => CreateEmergencyProfilePage()),
         );
-
-        debugPrint('Registrierung erfolgreich. UserId: $userId');
       }
     } catch (e) {
       showSnackBar(
@@ -70,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  // with help of ChatGPT
+  // validates password requirements by ChatGPT
   void checkPassword(String password) {
     setState(() {
       hasMinLength = password.length >= 12;
@@ -81,6 +80,7 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
+  // builds a password requirement row
   Widget passwordRequirement(String text, bool fulfilled) {
     return Row(
       children: [
@@ -152,7 +152,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 children: [
                   SizedBox(height: screenHeight * 0.1),
 
-                  // Title Login
                   AutoSizeText(
                     'REGISTRIERUNG',
                     style: AppStyles.title,
@@ -162,7 +161,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   SizedBox(height: screenHeight * 0.1),
 
-                  // Label E-Mail
                   AutoSizeText(
                     'E-Mail:',
                     style: AppStyles.label,
@@ -172,7 +170,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   SizedBox(height: screenHeight * 0.02),
 
-                  // TextField E-Mail
                   TextField(
                     controller: _emailController,
 
@@ -182,7 +179,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   SizedBox(height: screenHeight * 0.07),
 
-                  // Label Password
                   AutoSizeText(
                     'Passwort:',
                     style: AppStyles.label,
@@ -192,7 +188,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   SizedBox(height: screenHeight * 0.02),
 
-                  // TextField Password
                   TextField(
                     controller: _passwordController,
                     onChanged: checkPassword,
@@ -205,7 +200,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   SizedBox(height: screenHeight * 0.07),
 
-                  // Label Password wiederholen
                   AutoSizeText(
                     'Passwort wiederholen:',
                     style: AppStyles.label,
@@ -215,7 +209,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   SizedBox(height: screenHeight * 0.02),
 
-                  // TextField Password
                   TextField(
                     controller: _repeatedPasswordController,
                     obscureText: true,
