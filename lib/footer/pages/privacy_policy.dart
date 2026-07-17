@@ -3,7 +3,6 @@ import 'package:notfallbereit/footer/pages/legal_notice.dart';
 import 'package:notfallbereit/footer/pages/video_to_app.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key});
@@ -77,15 +76,10 @@ class PrivacyPolicyPage extends StatelessWidget {
 
                   SizedBox(height: screenHeight * 0.1),
 
-
                   RichText(
                     text: TextSpan(
                       style: AppStyles.label,
-                      children: [
-                        TextSpan(
-                          text: datenschutzerklaerung,
-                        ),
-                      ],
+                      children: [TextSpan(text: datenschutzerklaerung)],
                     ),
                   ),
 
@@ -167,6 +161,7 @@ class PrivacyPolicyPage extends StatelessWidget {
     );
   }
 
+  // by ChatGPT!
   final String datenschutzerklaerung = r'''
 Datenschutzerklärung
 

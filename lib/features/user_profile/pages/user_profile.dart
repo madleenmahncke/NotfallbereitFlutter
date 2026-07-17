@@ -384,8 +384,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Widget _buildDesktopLayout(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return SizedBox(
       height: 600,
       child: Row(
