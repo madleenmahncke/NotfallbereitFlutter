@@ -9,6 +9,10 @@
 
 </details>
 
+## Dev Info
+
+Please change the Index Page in `main.dart`
+
 ## Requirements
 
 Before running the application, make sure the following software is installed:
