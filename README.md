@@ -1,17 +1,68 @@
-# notfallbereit
+# Notfallbereit – Flutter Frontend
 
-A new Flutter project.
+<details>
+<summary>Click here for more information about Notfallbereit</summary>
+  
+> Notfallbereit is a digital emergency folder for everyone.
+>
+> You can save health information for an emergency. Paramedics can scan your emergency profile via QR-Code.
 
-## Getting Started
+</details>
 
-This project is a starting point for a Flutter application.
+## Requirements
 
-A few resources to get you started if this is your first Flutter project:
+Before running the application, make sure the following software is installed:
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+* Flutter SDK
+* Dart SDK
+* Visual Studio Code or a different code editor
+* and may be nice to test mobile devices: Android Studio
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Installation
+
+If needed, create a directory:
+
+```bash
+mkdir notfallbereit
+cd notfallbereit
+```
+
+Clone the repository:
+
+```bash
+git clone RELEASE
+```
+
+Clean previous build files:
+
+```bash
+flutter clean
+```
+
+Install all required dependencies:
+
+```bash
+flutter pub get
+```
+
+## Running the application
+
+Display all available devices:
+
+```bash
+flutter devices
+```
+
+Run the application on a specific device:
+
+```bash
+flutter run -d <device>
+```
+
+## Android Studio
+
+1. Open the Android Studio application and select your emulated device
+2. Open the VS-Code terminal and run:
+```bash
+flutter run -d
+```
