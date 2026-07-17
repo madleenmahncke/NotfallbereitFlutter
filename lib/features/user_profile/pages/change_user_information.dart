@@ -1,24 +1,29 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:notfallbereit/features/emergency_profile/pages/create_emergency_profile.dart';
-import 'package:notfallbereit/footer/pages/legal_notice.dart';
-import 'package:notfallbereit/footer/pages/privacy_policy.dart';
-import 'package:notfallbereit/footer/pages/video_to_app.dart';
+import 'package:notfallbereit/features/user_profile/pages/user_profile.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class ChangeUserInformationPage extends StatefulWidget {
+  final Map<String, dynamic>? emergencyProfile;
+  final String eMail;
+
+  const ChangeUserInformationPage({
+    super.key,
+    required this.emergencyProfile,
+    required this.eMail,
+  });
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<ChangeUserInformationPage> createState() =>
+      _ChangeUserInformationPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-  final _emailController = TextEditingController();
+class _ChangeUserInformationPageState extends State<ChangeUserInformationPage> {
+  var _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _repeatedPasswordController = TextEditingController();
 
@@ -30,14 +35,25 @@ class _RegisterPageState extends State<RegisterPage> {
 
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
-  bool _consentGiven = false;
+  // initialize text fields
+  @override
+  void initState() {
+    super.initState();
 
-  // sends the registration request
-  Future<void> register() async {
+    _emailController = TextEditingController(text: widget.eMail);
+  }
+
+  // sends the changed user information request
+  Future<void> changeUserInformation() async {
     try {
-      final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/api/auth/register'),
-        headers: {'Content-Type': 'application/json'},
+      final token = await storage.read(key: "jwt");
+
+      final response = await http.put(
+        Uri.parse('${ApiConfig.baseUrl}/api/user/updateUser'),
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           'email': _emailController.text,
           'password': _passwordController.text,
@@ -50,17 +66,16 @@ class _RegisterPageState extends State<RegisterPage> {
       // shows a success or error message
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
-      if (response.statusCode == 201) {
-        final String token = data['token'];
-
-        await storage.write(key: "jwt", value: token);
-
+      if (response.statusCode == 200) {
         // ensure widget is still in the widget tree
         if (!mounted) return;
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => CreateEmergencyProfilePage()),
+          MaterialPageRoute(
+            builder: (_) =>
+                UserProfilePage(emergencyProfileId: widget.emergencyProfile!['id']),
+          ),
         );
       }
     } catch (e) {
@@ -112,27 +127,6 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void _openLegalNotice(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const LegalNoticePage()),
-    );
-  }
-
-  void _openVideoToAppPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const VideoToAppPage()),
-    );
-  }
-
-  void _openPrivacyPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const PrivacyPolicyPage()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -176,7 +170,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   SizedBox(height: screenHeight * 0.1),
 
                   AutoSizeText(
-                    'REGISTRIERUNG',
+                    'NUTZERDATEN ÄNDERN',
                     style: AppStyles.title,
                     maxLines: 1,
                     minFontSize: 34,
@@ -280,41 +274,16 @@ class _RegisterPageState extends State<RegisterPage> {
                     ],
                   ),
 
-                  SizedBox(height: screenHeight * 0.06),
-
-                  Center(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: screenWidth * 0.8),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Checkbox(
-                            value: _consentGiven,
-                            onChanged: (value) {
-                              setState(() {
-                                _consentGiven = value ?? false;
-                              });
-                            },
-                          ),
-                          Flexible(
-                            child: Text(
-                              "Ich habe die Datenschutzerklärung gelesen und stimme der Verarbeitung meiner personenbezogenen sowie gesundheitsbezogenen Daten zum Zweck der Nutzung der Notfallmappe zu.",
-                              textAlign: TextAlign.center,
-                              style: AppStyles.label,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: screenHeight * 0.02),
+                  SizedBox(height: screenHeight * 0.08),
 
                   ElevatedButton(
-                    onPressed: _consentGiven ? register : null,
+                    onPressed: () => changeUserInformation(),
                     style: AppStyles.button,
-                    child: Text('Registrieren', style: AppStyles.buttonText),
+                    child: Text(
+                      'Bearbeiten',
+                      style: AppStyles.buttonText,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
 
                   SizedBox(height: screenHeight * 0.05),
@@ -323,74 +292,6 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
         ),
-      ),
-
-      bottomNavigationBar: SafeArea(
-        child: screenWidth < 1100
-            ? _buildMobileLayout(context)
-            : _buildDesktopLayout(context),
-      ),
-    );
-  }
-
-  Widget _buildMobileLayout(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          OutlinedButton(
-            style: AppStyles.footerButton,
-            onPressed: () => _openLegalNotice(context),
-            child: const Text("Impressum"),
-          ),
-
-          SizedBox(height: screenHeight * 0.02),
-
-          ElevatedButton(
-            style: AppStyles.footerVideoButton,
-            onPressed: () => _openVideoToAppPage(context),
-            child: const Text("Video zur App"),
-          ),
-
-          SizedBox(height: screenHeight * 0.02),
-
-          OutlinedButton(
-            style: AppStyles.footerButton,
-            onPressed: () => _openPrivacyPage(context),
-            child: const Text("Datenschutzerklärung"),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDesktopLayout(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          OutlinedButton(
-            style: AppStyles.footerButton,
-            onPressed: () => _openLegalNotice(context),
-            child: const Text("Impressum"),
-          ),
-
-          ElevatedButton(
-            style: AppStyles.footerVideoButton,
-            onPressed: () => _openVideoToAppPage(context),
-            child: const Text("Video zur App"),
-          ),
-
-          OutlinedButton(
-            style: AppStyles.footerButton,
-            onPressed: () => _openPrivacyPage(context),
-            child: const Text("Datenschutzerklärung"),
-          ),
-        ],
       ),
     );
   }

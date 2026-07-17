@@ -9,24 +9,21 @@ class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key});
 
   void _openLegalNotice(BuildContext context) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const LegalNoticePage()),
     );
   }
 
   void _openVideoToAppPage(BuildContext context) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const VideoToAppPage()),
     );
   }
 
   void _openPrivacyPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const PrivacyPolicyPage()),
-    );
+    // do nothing :)
   }
 
   @override

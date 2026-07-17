@@ -4,23 +4,24 @@ import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/auth/pages/index.dart';
 import 'package:notfallbereit/features/alert/pages/custom_alert.dart';
 import 'package:notfallbereit/features/user_profile/pages/change_emergency_profile_information.dart';
+import 'package:notfallbereit/features/user_profile/pages/change_user_information.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class UserProfilePage extends StatefulWidget {
-  final Map<String, dynamic>? emergencyProfile;
+  final int emergencyProfileId;
 
-  const UserProfilePage({super.key, required this.emergencyProfile});
+  const UserProfilePage({super.key, required this.emergencyProfileId});
 
   @override
   State<UserProfilePage> createState() => _UserProfilePageState();
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
+  Map<String, dynamic>? emergencyProfile;
   String eMail = "";
-  int userId = 00;
 
   final storage = const FlutterSecureStorage();
 
@@ -29,6 +30,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     super.initState();
 
     loadUserData();
+    loadEmergencyProfile();
   }
 
   // loads the user data
@@ -46,7 +48,34 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
       setState(() {
         eMail = data['eMail'];
-        userId = data['userId'];
+      });
+    } catch (e) {
+      showSnackBar(
+        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
+        error: true,
+      );
+    }
+  }
+
+  // loads the emergency profile
+  Future<void> loadEmergencyProfile() async {
+    try {
+      final token = await storage.read(key: "jwt");
+
+      final response = await http.get(
+        Uri.parse(
+          '${ApiConfig.baseUrl}/api/emergencyProfile/getEmergencyProfile/${widget.emergencyProfileId}',
+        ),
+        headers: {"Authorization": "Bearer $token"},
+      );
+
+      final data = jsonDecode(response.body);
+
+      // shows a success or error message
+      showSnackBar(data["message"], error: response.statusCode >= 400);
+
+      setState(() {
+        emergencyProfile = data['emergencyProfile'];
       });
     } catch (e) {
       showSnackBar(
@@ -62,7 +91,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       final token = await storage.read(key: "jwt");
 
       final response = await http.delete(
-        Uri.parse('${ApiConfig.baseUrl}/api/user/$userId'),
+        Uri.parse('${ApiConfig.baseUrl}/api/user/deleteUser'),
         headers: {"Authorization": "Bearer $token"},
       );
 
@@ -228,18 +257,18 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
         SizedBox(height: screenHeight * 0.05),
 
-        _profileEntry("Vorname", widget.emergencyProfile!['first_name']),
+        _profileEntry("Vorname", emergencyProfile!['first_name']),
 
-        _profileEntry("Nachname", widget.emergencyProfile!['last_name']),
+        _profileEntry("Nachname", emergencyProfile!['last_name']),
 
         _profileEntry(
           "Straße und Hausnummer",
-          widget.emergencyProfile!['street_and_number'],
+          emergencyProfile!['street_and_number'],
         ),
 
         _profileEntry(
           "Postleitzahl und Ort",
-          widget.emergencyProfile!['location'],
+          emergencyProfile!['location'],
         ),
 
         // because Spacer() doesn't work on mobile
@@ -251,14 +280,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
             child: ElevatedButton(
               style: AppStyles.button,
               onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          ChangeEmergencyProfileInformationPage(emergencyProfile: widget.emergencyProfile),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ChangeEmergencyProfileInformationPage(
+                      emergencyProfile: emergencyProfile,
                     ),
-                  );
-                },
+                  ),
+                );
+              },
               child: const AutoSizeText(
                 minFontSize: 26,
                 maxLines: 3,
@@ -312,7 +342,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
             width: desktop ? screenWidth * 0.3 : screenWidth * 0.8,
             child: ElevatedButton(
               style: AppStyles.button,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ChangeUserInformationPage(
+                      emergencyProfile: emergencyProfile,
+                      eMail: eMail,
+                    ),
+                  ),
+                );
+              },
               child: const AutoSizeText(
                 minFontSize: 26,
                 maxLines: 3,
@@ -347,7 +387,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return SizedBox(
-      height: screenHeight * 0.6,
+      height: 600,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
