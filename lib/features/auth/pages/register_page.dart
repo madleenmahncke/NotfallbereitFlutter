@@ -1,8 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/emergency_profile/pages/create_emergency_profile.dart';
+import 'package:notfallbereit/footer/pages/legal_notice.dart';
+import 'package:notfallbereit/footer/pages/privacy_policy.dart';
+import 'package:notfallbereit/footer/pages/video_to_app.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
@@ -107,6 +109,27 @@ class _RegisterPageState extends State<RegisterPage> {
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 3),
       ),
+    );
+  }
+
+  void _openLegalNotice(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const LegalNoticePage()),
+    );
+  }
+
+  void _openVideoToAppPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const VideoToAppPage()),
+    );
+  }
+
+  void _openPrivacyPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const PrivacyPolicyPage()),
     );
   }
 
@@ -303,70 +326,72 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
 
-      // TODO nochmal anschauen !!!
-      bottomNavigationBar: LayoutBuilder(
-        builder: (context, constraints) {
-          final isDesktop = MediaQuery.of(context).size.width >= 1200;
+      bottomNavigationBar: SafeArea(
+        child: screenWidth < 1100
+            ? _buildMobileLayout(context)
+            : _buildDesktopLayout(context),
+      ),
+    );
+  }
 
-          return SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: isDesktop
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        OutlinedButton(
-                          style: AppStyles.footerButton,
-                          onPressed: () {},
-                          child: const Text("Impressum"),
-                        ),
+  Widget _buildMobileLayout(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
 
-                        const SizedBox(width: 30),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          OutlinedButton(
+            style: AppStyles.footerButton,
+            onPressed: () => _openLegalNotice(context),
+            child: const Text("Impressum"),
+          ),
 
-                        ElevatedButton(
-                          style: AppStyles.footerVideoButton,
-                          onPressed: () {},
-                          child: const Text("Video zur App"),
-                        ),
+          SizedBox(height: screenHeight * 0.02),
 
-                        const SizedBox(width: 30),
+          ElevatedButton(
+            style: AppStyles.footerVideoButton,
+            onPressed: () => _openVideoToAppPage(context),
+            child: const Text("Video zur App"),
+          ),
 
-                        OutlinedButton(
-                          style: AppStyles.footerButton,
-                          onPressed: () {},
-                          child: const Text("Datenschutzerklärung"),
-                        ),
-                      ],
-                    )
-                  : Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        OutlinedButton(
-                          style: AppStyles.footerButton,
-                          onPressed: () {},
-                          child: const Text("Impressum"),
-                        ),
+          SizedBox(height: screenHeight * 0.02),
 
-                        const SizedBox(height: 10),
+          OutlinedButton(
+            style: AppStyles.footerButton,
+            onPressed: () => _openPrivacyPage(context),
+            child: const Text("Datenschutzerklärung"),
+          ),
+        ],
+      ),
+    );
+  }
 
-                        ElevatedButton(
-                          style: AppStyles.footerVideoButton,
-                          onPressed: () {},
-                          child: const Text("Video zur App"),
-                        ),
+  Widget _buildDesktopLayout(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          OutlinedButton(
+            style: AppStyles.footerButton,
+            onPressed: () => _openLegalNotice(context),
+            child: const Text("Impressum"),
+          ),
 
-                        const SizedBox(height: 10),
+          ElevatedButton(
+            style: AppStyles.footerVideoButton,
+            onPressed: () => _openVideoToAppPage(context),
+            child: const Text("Video zur App"),
+          ),
 
-                        OutlinedButton(
-                          style: AppStyles.footerButton,
-                          onPressed: () {},
-                          child: const Text("Datenschutzerklärung"),
-                        ),
-                      ],
-                    ),
-            ),
-          );
-        },
+          OutlinedButton(
+            style: AppStyles.footerButton,
+            onPressed: () => _openPrivacyPage(context),
+            child: const Text("Datenschutzerklärung"),
+          ),
+        ],
       ),
     );
   }

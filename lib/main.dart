@@ -20,6 +20,7 @@ class NotfallbereitApp extends StatelessWidget {
       ),
 
       home: const Index(),
+      // CHANGE HERE FOR PARAMEDIC VIEW
       //home: const ParamedicIndex()
     );
   }

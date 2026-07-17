@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/auth/pages/index.dart';
 import 'package:notfallbereit/features/alert/pages/custom_alert.dart';
+import 'package:notfallbereit/features/user_profile/pages/change_emergency_profile_information.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
@@ -249,7 +250,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
             width: desktop ? screenWidth * 0.3 : screenWidth * 0.8,
             child: ElevatedButton(
               style: AppStyles.button,
-              onPressed: () {},
+              onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          ChangeEmergencyProfileInformationPage(emergencyProfile: widget.emergencyProfile),
+                    ),
+                  );
+                },
               child: const AutoSizeText(
                 minFontSize: 26,
                 maxLines: 3,

@@ -1,28 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:notfallbereit/features/auth/pages/login_page.dart';
-import 'package:notfallbereit/features/auth/pages/register_page.dart';
-import 'package:notfallbereit/footer/pages/legal_notice.dart';
 import 'package:notfallbereit/footer/pages/privacy_policy.dart';
 import 'package:notfallbereit/footer/pages/video_to_app.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-class Index extends StatelessWidget {
-  const Index({super.key});
-
-  void _openLogin(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginPage()),
-    );
-  }
-
-  void _openRegister(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const RegisterPage()),
-    );
-  }
+class LegalNoticePage extends StatelessWidget {
+  const LegalNoticePage({super.key});
 
   void _openLegalNotice(BuildContext context) {
     Navigator.push(
@@ -53,7 +36,28 @@ class Index extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFA8C3A0),
 
-      appBar: AppBar(backgroundColor: const Color(0xFFA8C3A0), elevation: 0),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFA8C3A0),
+        elevation: 0,
+        leadingWidth: 180,
+
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12, top: 12),
+          child: TextButton.icon(
+            style: TextButton.styleFrom(
+              backgroundColor: const Color(0xFF666666),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+            label: const Text('Zurück', style: AppStyles.appBarText),
+          ),
+        ),
+      ),
 
       body: SingleChildScrollView(
         child: Center(
@@ -62,44 +66,42 @@ class Index extends StatelessWidget {
 
             child: SizedBox(
               width: screenWidth * 0.8,
-
               child: Column(
                 children: [
-                  SizedBox(height: screenHeight * 0.15),
+                  SizedBox(height: screenHeight * 0.1),
 
-                  // Title Login
                   AutoSizeText(
-                    'NOTFALLBEREIT',
+                    'IMPRESSUM',
                     style: AppStyles.title,
                     maxLines: 1,
                     minFontSize: 34,
                   ),
 
-                  SizedBox(height: screenHeight * 0.2),
+                  SizedBox(height: screenHeight * 0.1),
 
-                  ElevatedButton(
-                    onPressed: () => _openLogin(context),
-                    style: AppStyles.button,
-                    child: Text('Anmelden', style: AppStyles.buttonText),
+                  RichText(
+                    text: TextSpan(
+                      style: AppStyles.label,
+                      children: [
+                        const TextSpan(
+                          text: '''Max Mustermann
+
+Musterstraße 111
+Gebäude 44
+90210 Musterstadt
+
+Kontakt
+Telefon: +49 (0) 123 44 55 66
+Telefax: +49 (0) 123 44 55 99
+E-Mail: mustermann@musterfirma.de
+
+Quelle: https://www.e-recht24.de''',
+                        ),
+                      ],
+                    ),
                   ),
 
                   SizedBox(height: screenHeight * 0.05),
-
-                  AutoSizeText(
-                    'Noch kein Konto?',
-                    style: AppStyles.label,
-                    maxLines: 1,
-                    minFontSize: 24,
-                  ),
-
-                  TextButton(
-                    onPressed: () => _openRegister(context),
-
-                    child: const Text(
-                      'Registrieren',
-                      style: AppStyles.labelUnderline,
-                    ),
-                  ),
                 ],
               ),
             ),

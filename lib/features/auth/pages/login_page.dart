@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:notfallbereit/features/emergency_profile/pages/create_emergency_profile.dart';
 import 'package:notfallbereit/features/emergency_profile/pages/emergency_profile.dart';
+import 'package:notfallbereit/footer/pages/legal_notice.dart';
+import 'package:notfallbereit/footer/pages/privacy_policy.dart';
+import 'package:notfallbereit/footer/pages/video_to_app.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
@@ -85,6 +88,27 @@ class _LoginPageState extends State<LoginPage> {
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 3),
       ),
+    );
+  }
+
+  void _openLegalNotice(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const LegalNoticePage()),
+    );
+  }
+
+  void _openVideoToAppPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const VideoToAppPage()),
+    );
+  }
+
+  void _openPrivacyPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const PrivacyPolicyPage()),
     );
   }
 
@@ -190,33 +214,73 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
-      
+
       bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              OutlinedButton(
-                style: AppStyles.footerButton,
-                onPressed: () {},
-                child: const Text("Impressum"),
-              ),
+        child: screenWidth < 1100
+            ? _buildMobileLayout(context)
+            : _buildDesktopLayout(context),
+      ),
+    );
+  }
 
-              ElevatedButton(
-                style: AppStyles.footerVideoButton,
-                onPressed: () {},
-                child: const Text("Video zur App"),
-              ),
+  Widget _buildMobileLayout(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
 
-              OutlinedButton(
-                style: AppStyles.footerButton,
-                onPressed: () {},
-                child: const Text("Datenschutzerklärung"),
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          OutlinedButton(
+            style: AppStyles.footerButton,
+            onPressed: () => _openLegalNotice(context),
+            child: const Text("Impressum"),
           ),
-        ),
+
+          SizedBox(height: screenHeight * 0.02),
+
+          ElevatedButton(
+            style: AppStyles.footerVideoButton,
+            onPressed: () => _openVideoToAppPage(context),
+            child: const Text("Video zur App"),
+          ),
+
+          SizedBox(height: screenHeight * 0.02),
+
+          OutlinedButton(
+            style: AppStyles.footerButton,
+            onPressed: () => _openPrivacyPage(context),
+            child: const Text("Datenschutzerklärung"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDesktopLayout(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          OutlinedButton(
+            style: AppStyles.footerButton,
+            onPressed: () => _openLegalNotice(context),
+            child: const Text("Impressum"),
+          ),
+
+          ElevatedButton(
+            style: AppStyles.footerVideoButton,
+            onPressed: () => _openVideoToAppPage(context),
+            child: const Text("Video zur App"),
+          ),
+
+          OutlinedButton(
+            style: AppStyles.footerButton,
+            onPressed: () => _openPrivacyPage(context),
+            child: const Text("Datenschutzerklärung"),
+          ),
+        ],
       ),
     );
   }
