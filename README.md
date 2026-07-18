@@ -11,7 +11,7 @@
 
 ## Dev Info
 
-Please change the Index Page in `main.dart`
+Please change the Index Page in `main.dart` to test the patient and paramedic route
 
 ## Requirements
 
