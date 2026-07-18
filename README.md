@@ -31,11 +31,13 @@ mkdir notfallbereit
 cd notfallbereit
 ```
 
-Clone the repository:
+Download the release from releases:
 
 ```bash
-git clone RELEASE
+Release - Backend
 ```
+
+Add the code to your directory.
 
 Clean previous build files:
 
