@@ -34,7 +34,7 @@ cd notfallbereit
 Download the release from releases:
 
 ```bash
-Release - Backend
+Release - Frontend
 ```
 
 Add the code to your directory.
