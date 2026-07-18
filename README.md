@@ -35,7 +35,7 @@ cd notfallbereit
 Download the release from releases:
 
 ```bash
-Release - Frontend
+[Release - Frontend](https://github.com/madleenmahncke/NotfallbereitFlutter/releases/tag/v1.0.0)
 ```
 
 Add the code to your directory.
