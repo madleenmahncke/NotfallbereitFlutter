@@ -20,6 +20,7 @@ Before running the application, make sure the following software is installed:
 * Flutter SDK
 * Dart SDK
 * Visual Studio Code or a different code editor
+* If Visual Studio Code is used, please ensure to install development with C++ VIA Visual Studio Installer
 * and to test mobile devices: Android Studio
 
 ## Installation
