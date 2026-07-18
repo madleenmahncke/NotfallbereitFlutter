@@ -142,7 +142,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                     context,
                     MaterialPageRoute(
                       builder: (_) =>
-                          UserProfilePage(emergencyProfile: emergencyProfile),
+                          UserProfilePage(emergencyProfileId: widget.emergencyProfileId),
                     ),
                   );
                 },

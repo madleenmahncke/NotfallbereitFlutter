@@ -8,24 +8,21 @@ class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key});
 
   void _openLegalNotice(BuildContext context) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const LegalNoticePage()),
     );
   }
 
   void _openVideoToAppPage(BuildContext context) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const VideoToAppPage()),
     );
   }
 
   void _openPrivacyPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const PrivacyPolicyPage()),
-    );
+    // do nothing :)
   }
 
   @override
@@ -79,15 +76,10 @@ class PrivacyPolicyPage extends StatelessWidget {
 
                   SizedBox(height: screenHeight * 0.1),
 
-
                   RichText(
                     text: TextSpan(
                       style: AppStyles.label,
-                      children: [
-                        TextSpan(
-                          text: datenschutzerklaerung,
-                        ),
-                      ],
+                      children: [TextSpan(text: datenschutzerklaerung)],
                     ),
                   ),
 
@@ -169,6 +161,7 @@ class PrivacyPolicyPage extends StatelessWidget {
     );
   }
 
+  // by ChatGPT!
   final String datenschutzerklaerung = r'''
 Datenschutzerklärung
 

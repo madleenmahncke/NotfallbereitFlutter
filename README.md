@@ -9,6 +9,10 @@
 
 </details>
 
+## Dev Info
+
+Please change the Index Page in `main.dart` to test the patient and paramedic route
+
 ## Requirements
 
 Before running the application, make sure the following software is installed:
@@ -16,7 +20,8 @@ Before running the application, make sure the following software is installed:
 * Flutter SDK
 * Dart SDK
 * Visual Studio Code or a different code editor
-* and may be nice to test mobile devices: Android Studio
+* If Visual Studio Code is used, please ensure to install development with C++ via Visual Studio Installer
+* and to test mobile devices: Android Studio
 
 ## Installation
 
@@ -27,11 +32,13 @@ mkdir notfallbereit
 cd notfallbereit
 ```
 
-Clone the repository:
+Download the release from releases:
 
 ```bash
-git clone RELEASE
+[Release - Frontend](https://github.com/madleenmahncke/NotfallbereitFlutter/releases/tag/v1.0.0)
 ```
+
+Add the code to your directory.
 
 Clean previous build files:
 

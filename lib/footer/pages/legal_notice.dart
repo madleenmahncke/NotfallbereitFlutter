@@ -8,21 +8,18 @@ class LegalNoticePage extends StatelessWidget {
   const LegalNoticePage({super.key});
 
   void _openLegalNotice(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const LegalNoticePage()),
-    );
+    // do nothing :)
   }
 
   void _openVideoToAppPage(BuildContext context) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const VideoToAppPage()),
     );
   }
 
   void _openPrivacyPage(BuildContext context) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const PrivacyPolicyPage()),
     );

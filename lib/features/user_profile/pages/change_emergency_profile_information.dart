@@ -74,7 +74,7 @@ class _ChangeEmergencyProfileInformationPageState
       // shows a success or error message
       showSnackBar(data["message"], error: response.statusCode >= 400);
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         // ensure widget is still in the widget tree
         if (!mounted) return;
 
@@ -82,7 +82,7 @@ class _ChangeEmergencyProfileInformationPageState
           context,
           MaterialPageRoute(
             builder: (_) =>
-                UserProfilePage(emergencyProfile: widget.emergencyProfile),
+                UserProfilePage(emergencyProfileId: widget.emergencyProfile!['id']),
           ),
         );
       }
