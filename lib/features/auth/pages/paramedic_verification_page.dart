@@ -55,10 +55,7 @@ class _ParamedicVerificationPageState extends State<ParamedicVerificationPage> {
         );
       }
     } catch (e) {
-      showSnackBar(
-        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
-        error: true,
-      );
+      debugPrint(e.toString());
     }
   }
 

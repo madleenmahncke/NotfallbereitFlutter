@@ -57,11 +57,7 @@ class QRCodeDialog extends StatelessWidget {
 
       showSnackBar(context, "QR-Code erfolgreich erstellt.", error: false);
     } catch (e) {
-      showSnackBar(
-        context,
-        "QR-Code konnte nicht erstellt werden.",
-        error: true,
-      );
+      debugPrint(e.toString());
     }
   }
 

@@ -1,11 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:notfallbereit/features/emergency_profile/pages/create_emergency_profile.dart';
 import 'package:notfallbereit/features/user_profile/pages/user_profile.dart';
-import 'package:notfallbereit/footer/pages/legal_notice.dart';
-import 'package:notfallbereit/footer/pages/privacy_policy.dart';
-import 'package:notfallbereit/footer/pages/video_to_app.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../core/api/api_config.dart';
@@ -91,10 +87,7 @@ class _ChangeEmergencyProfileInformationPageState
         );
       }
     } catch (e) {
-      showSnackBar(
-        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
-        error: true,
-      );
+      debugPrint(e.toString());
     }
   }
 

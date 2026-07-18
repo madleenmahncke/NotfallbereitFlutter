@@ -59,10 +59,7 @@ class _AddEmergencyContactState extends State<AddEmergencyContactWindow> {
         Navigator.pop(context, true);
       }
     } catch (e) {
-      showSnackBar(
-        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
-        error: true,
-      );
+      debugPrint(e.toString());
     }
   }
 

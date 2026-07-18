@@ -71,10 +71,7 @@ class _LoginPageState extends State<LoginPage> {
         showSnackBar(data["message"], error: response.statusCode >= 400);
       }
     } catch (e) {
-      showSnackBar(
-        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
-        error: true,
-      );
+      debugPrint(e.toString());
     }
   }
 

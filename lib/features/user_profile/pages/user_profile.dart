@@ -49,10 +49,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         userId = data['userId'];
       });
     } catch (e) {
-      showSnackBar(
-        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
-        error: true,
-      );
+      debugPrint(e.toString());
     }
   }
 
@@ -81,10 +78,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         );
       }
     } catch (e) {
-      showSnackBar(
-        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
-        error: true,
-      );
+      debugPrint(e.toString());
     }
   }
 

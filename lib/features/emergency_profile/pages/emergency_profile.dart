@@ -68,10 +68,7 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
         emergencyContacts = data['emergencyContacts'] ?? [];
       });
     } catch (e) {
-      showSnackBar(
-        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
-        error: true,
-      );
+      debugPrint(e.toString());
     }
   }
 

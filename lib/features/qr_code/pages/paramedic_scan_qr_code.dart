@@ -56,10 +56,7 @@ class _ParamedicScanQrCodeState extends State<ParamedicScanQrCode> {
         );
       }
     } catch (e) {
-      showSnackBar(
-        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
-        error: true,
-      );
+      debugPrint(e.toString());
     }
   }
 

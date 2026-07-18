@@ -49,11 +49,7 @@ class MedicationDialog extends StatelessWidget {
         Navigator.pop(context, true);
       }
     } catch (e) {
-      showSnackBar(
-        context,
-        "Es ist ein unerwarteter Fehler aufgetreten. + $e",
-        error: true,
-      );
+      debugPrint(e.toString());
     }
   }
 
