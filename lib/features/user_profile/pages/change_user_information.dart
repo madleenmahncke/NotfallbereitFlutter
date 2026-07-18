@@ -73,8 +73,9 @@ class _ChangeUserInformationPageState extends State<ChangeUserInformationPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (_) =>
-                UserProfilePage(emergencyProfileId: widget.emergencyProfile!['id']),
+            builder: (_) => UserProfilePage(
+              emergencyProfileId: widget.emergencyProfile!['id'],
+            ),
           ),
         );
       }
@@ -150,7 +151,14 @@ class _ChangeUserInformationPageState extends State<ChangeUserInformationPage> {
               ),
             ),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => UserProfilePage(
+                    emergencyProfileId: widget.emergencyProfile!['id'],
+                  ),
+                ),
+              );
             },
             icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
             label: const Text('Zurück', style: AppStyles.appBarText),

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:notfallbereit/features/alert/pages/custom_alert.dart';
 import 'package:notfallbereit/features/emergency_contact/pages/emergency_contact_dialog.dart';
 import 'package:notfallbereit/features/medication/pages/medication_dialog.dart';
 import 'package:notfallbereit/features/qr_code/pages/auswahl_informationen.dart';
@@ -117,7 +118,19 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (_) => CustomAlert(
+                      title: 'WARNUNG',
+                      message: 'Willst du dich wirklich abmelden?',
+                      onConfirm: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  );
+                },
                 icon: const Icon(
                   Icons.arrow_back,
                   color: Colors.white,
@@ -141,8 +154,9 @@ class _EmergencyProfilePageState extends State<EmergencyProfilePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) =>
-                          UserProfilePage(emergencyProfileId: widget.emergencyProfileId),
+                      builder: (_) => UserProfilePage(
+                        emergencyProfileId: widget.emergencyProfileId,
+                      ),
                     ),
                   );
                 },

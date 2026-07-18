@@ -39,6 +39,9 @@ class _LoginPageState extends State<LoginPage> {
 
       final data = jsonDecode(response.body);
 
+      // shows a success or error message
+      showSnackBar(data["message"], error: response.statusCode >= 400);
+      
       if (response.statusCode == 200) {
         final bool hasEmergencyProfile = data['hasEmergencyProfile'];
         final int userId = data['userId'];
@@ -66,9 +69,6 @@ class _LoginPageState extends State<LoginPage> {
             MaterialPageRoute(builder: (_) => CreateEmergencyProfilePage()),
           );
         }
-
-        // shows a success or error message
-        showSnackBar(data["message"], error: response.statusCode >= 400);
       }
     } catch (e) {
       debugPrint(e.toString());

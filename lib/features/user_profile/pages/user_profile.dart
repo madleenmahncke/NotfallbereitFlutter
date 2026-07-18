@@ -126,6 +126,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (emergencyProfile == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator(color: Color(0xFFA8C3A0))));
+    }
+
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -260,10 +264,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           emergencyProfile!['street_and_number'],
         ),
 
-        _profileEntry(
-          "Postleitzahl und Ort",
-          emergencyProfile!['location'],
-        ),
+        _profileEntry("Postleitzahl und Ort", emergencyProfile!['location']),
 
         // because Spacer() doesn't work on mobile
         if (desktop) const Spacer() else const SizedBox(height: 40),

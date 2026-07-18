@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notfallbereit/features/alert/pages/custom_alert.dart';
 import 'package:notfallbereit/features/emergency_contact/pages/paramedic_emergency_contact_dialog.dart';
 import 'package:notfallbereit/features/medication/pages/paramedic_medication_dialog.dart';
 import 'package:notfallbereit/theme/app_styles.dart';
@@ -34,7 +35,7 @@ class _ParamedicEmergencyProfileViewState
   Map<String, dynamic>? emergencyProfile;
 
   final storage = const FlutterSecureStorage();
-  
+
   // initialize emergency profile data
   @override
   void initState() {
@@ -79,7 +80,19 @@ class _ParamedicEmergencyProfileViewState
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (_) => CustomAlert(
+                      title: 'WARNUNG',
+                      message: 'Willst du dich wirklich abmelden?',
+                      onConfirm: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  );
+                },
                 icon: const Icon(
                   Icons.arrow_back,
                   color: Colors.white,
@@ -250,7 +263,8 @@ class _ParamedicEmergencyProfileViewState
                         await showDialog(
                           context: context,
                           barrierDismissible: false,
-                          builder: (_) => ParamedicMedicationDialog(medication: item),
+                          builder: (_) =>
+                              ParamedicMedicationDialog(medication: item),
                         );
                       },
                       child: Text('› ${item['name']}', style: AppStyles.text),
@@ -263,8 +277,9 @@ class _ParamedicEmergencyProfileViewState
                         await showDialog(
                           context: context,
                           barrierDismissible: false,
-                          builder: (_) =>
-                              ParamedicEmergencyContactDialog(emergencyContact: item),
+                          builder: (_) => ParamedicEmergencyContactDialog(
+                            emergencyContact: item,
+                          ),
                         );
                       },
                       child: Text(
