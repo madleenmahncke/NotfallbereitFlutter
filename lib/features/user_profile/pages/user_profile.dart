@@ -274,7 +274,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             child: ElevatedButton(
               style: AppStyles.button,
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (_) => ChangeEmergencyProfileInformationPage(
@@ -337,7 +337,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             child: ElevatedButton(
               style: AppStyles.button,
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (_) => ChangeUserInformationPage(
